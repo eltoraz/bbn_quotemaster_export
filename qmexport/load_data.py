@@ -1,6 +1,8 @@
 # import the data in CSV format, exported from MS Access
 import csv
 
+# wrapper to allow pulling in data from other sources (e.g.,
+#  directly from the database)
 def qm_read(format='csv', filename=''):
     if format == 'csv':
         return import_csv(filename)
