@@ -4,17 +4,20 @@ from qmexport import config, load_data, map_data, write_data
 
 # get the data
 # for now, by opening a CSV of the result set of the queries
-part_filename = config.csv_path + config.csv_files['part']
-part_price_filename = config.csv_path + config.csv_files['part price']
+part_filename = config.qualified_filename('part')
+part_price_filename = config.qualified_filename('part price')
+part_rev_filename = config.qualified_filename('part revision')
 
 part_data = load_data.qm_read(format='csv', filename=part_filename)
 part_price_data = load_data.qm_read(format='csv', filename=part_price_filename)
+part_rev_data = load_data.qm_read(format='csv', filename=part_rev_filename)
 
 # map QM values to fields expected by DMT, scrubbing & 
 #  reformatting as necessary
 dmt_part_data = map_data.map_part(part_data)
 dmt_price_data = map_data.map_part_prices(part_price_data)
 dmt_plant_data = map_data.map_part_plant(part_data)
+dmt_rev_data = map_data.map_part_rev(part_rev_data)
 
 # export the Epicor-friendly data
 write_data.write_csv(config.part_header.split(','),
@@ -26,18 +29,32 @@ write_data.write_csv(config.part_price_header.split(','),
 write_data.write_csv(config.part_plant_header.split(','),
                      dmt_plant_data,
                      config.output_path+'part_plant.csv')
+write_data.write_csv(config.part_rev_header.split(','),
+                     dmt_rev_data,
+                     config.output_path+'part_rev.csv')
 
 
 
 # debugging info
+print('---PART---')
 print(len(part_data))
 print(part_data[0])
 
+print('---PART (DMT)---')
 print(len(dmt_part_data))
 print(dmt_part_data[0])
 
+print('---PART PRICE (DMT)---')
 print(len(dmt_price_data))
 print(dmt_price_data[0])
+
+print('---PART PLANT (DMT)---')
+print(len(dmt_plant_data))
+print(dmt_plant_data[0])
+
+print('---PART REV (DMT)---')
+print(len(dmt_rev_data))
+print(dmt_rev_data[435])
 
 print('')
 

@@ -1,8 +1,14 @@
-# convert Quote Master data to Epicor (mostly by mapping QM
-#  values to their Epicor IDs)
+"""convert Quote Master data to Epicor (mostly by mapping QM
+values to their Epicor IDs)
+"""
+import re
 from qmexport import config
 
 def combined_description(entry):
+    """Return the full description for the part entry, by appending
+    a non-empty `FirstOFDesc2` field to `FirstOfDesc1`, separated by
+    an underscore
+    """
     description = entry['FirstOfDesc1']
     if entry['FirstOFDesc2']:
         description = description + '_' + entry['FirstOFDesc2']
@@ -10,11 +16,23 @@ def combined_description(entry):
     return description
 
 def convert_part_type(entry):
+    """Return the part type based on the Quote Master `Inclasskey` field
+    """
     part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
                          'ROCK': 'M', 'PARTS': 'M'}
     return part_type_mapping[entry['Inclasskey']]
 
+def extract_rev_num(filename):
+    """Return the revision number for the part by searching the PDF
+    specified by `filename`
+    """
+    rev_num = '00'
+
+    return rev_num
+
 def map_part(data):
+    """Convert Quote Master part data to DMT format
+    """
     class_mapping = {'SCRNR': 'FNSH', 'ROCK': 'FSHL'} 
     class_mapping_parts = {'0': 'COMP', '1': 'ASBL'}
     uom_mapping = {'P': 'EAP', 'M': 'EAM'}
@@ -61,6 +79,9 @@ def map_part(data):
     return dmt_data
 
 def map_part_prices(data):
+    """Convert Quote Master part price data to DMT format, for use with DMT's
+    'update' operation to add price data to already-existing parts
+    """
     dmt_data = []
     for entry in data:
         dmt_entry = {}
@@ -75,6 +96,8 @@ def map_part_prices(data):
     return dmt_data
 
 def map_part_plant(data):
+    """Convert Quote Master part plant data to DMT format
+    """
     dmt_data = []
     for entry in data:
         dmt_entry = {}
@@ -96,14 +119,20 @@ def map_part_plant(data):
 
     return dmt_data
 
-def map_part_rev(data)
+def map_part_rev(data):
+    """Convert Quote Master part revision data to DMT format
+    """
     dmt_data = []
     for entry in data:
         dmt_entry = {}
 
-        # TODO: these are placeholders
-        revision_num = 01
+        revision_num = extract_rev_num(entry['Image_Path'])
         rev_description = 'Revision ' + revision_num
+
+        # drawing number should be in Process_Plan field, but some entries
+        #  haven't been updated to new format
+        proc_plan = entry['Process_Plan']
+        draw_num_re = '^[a-zA-Z]{3}-\d{3}(-\w{1,2})?'
 
         dmt_entry['Company'] = config.company
         dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
@@ -111,8 +140,11 @@ def map_part_rev(data)
         dmt_entry['RevShortDesc'] = rev_description
         dmt_entry['RevDescription'] = rev_description
         dmt_entry['Approved'] = True
-        dmt_entry['DrawNum'] = 
+        dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
         dmt_entry['Plant'] = config.plant
-        dmt_entry
+        dmt_entry['MtlCostPct'] = entry['FirstOfStdcost']
+        dmt_entry['ProcessMode'] = config.process_mode
+
+        dmt_data.append(dmt_entry)
 
     return dmt_data
