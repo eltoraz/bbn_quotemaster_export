@@ -9,9 +9,12 @@ def combined_description(entry):
 
     return description
 
-def map_part(data):
+def convert_part_type(entry):
     part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
                          'ROCK': 'M', 'PARTS': 'M'}
+    return part_type_mapping[entry['Inclasskey']]
+
+def map_part(data):
     class_mapping = {'SCRNR': 'FNSH', 'ROCK': 'FSHL'} 
     class_mapping_parts = {'0': 'COMP', '1': 'ASBL'}
     uom_mapping = {'P': 'EAP', 'M': 'EAM'}
@@ -26,7 +29,7 @@ def map_part(data):
         classkey = entry['Inclasskey']
         class_id = class_mapping[classkey] if classkey != 'PARTS' else class_mapping_parts[entry['NRCCPrint']]
 
-        part_type = part_type_mapping[entry['Inclasskey']]
+        part_type = convert_part_type(entry)
         uom = uom_mapping[part_type]
 
         prefix = 'FSC' if entry['FirstOFDesc2'][:3].upper() == 'FSC' else 'NCA'
@@ -68,5 +71,48 @@ def map_part_prices(data):
         dmt_entry['UnitPrice'] = entry['PRICE']
 
         dmt_data.append(dmt_entry)
+
+    return dmt_data
+
+def map_part_plant(data):
+    dmt_data = []
+    for entry in data:
+        dmt_entry = {}
+
+        part_type = convert_part_type(entry)
+
+        dmt_entry['Company'] = config.company
+        dmt_entry['Plant'] = config.plant
+        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['PrimWhse'] = config.prim_whse
+        dmt_entry['SourceType'] = part_type
+        dmt_entry['CostMethod'] = config.cost_method
+        dmt_entry['SNMask'] = config.sn_mask if part_type == 'M' else ''
+        dmt_entry['SNMaskExample'] = config.sn_mask_example if part_type == 'M' else ''
+        dmt_entry['SNBaseDataType'] = config.sn_base_data_type if part_type == 'M' else ''
+        dmt_entry['SNFormat'] = config.sn_format if part_type == 'M' else ''
+
+        dmt_data.append(dmt_entry)
+
+    return dmt_data
+
+def map_part_rev(data)
+    dmt_data = []
+    for entry in data:
+        dmt_entry = {}
+
+        # TODO: these are placeholders
+        revision_num = 01
+        rev_description = 'Revision ' + revision_num
+
+        dmt_entry['Company'] = config.company
+        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['RevisionNum'] = revision_num
+        dmt_entry['RevShortDesc'] = rev_description
+        dmt_entry['RevDescription'] = rev_description
+        dmt_entry['Approved'] = True
+        dmt_entry['DrawNum'] = 
+        dmt_entry['Plant'] = config.plant
+        dmt_entry
 
     return dmt_data

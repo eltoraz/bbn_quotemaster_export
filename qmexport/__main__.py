@@ -14,11 +14,20 @@ part_price_data = load_data.qm_read(format='csv', filename=part_price_filename)
 #  reformatting as necessary
 dmt_part_data = map_data.map_part(part_data)
 dmt_price_data = map_data.map_part_prices(part_price_data)
+dmt_plant_data = map_data.map_part_plant(part_data)
 
 # export the Epicor-friendly data
 write_data.write_csv(config.part_header.split(','),
                      dmt_part_data,
                      config.output_path+'part.csv')
+write_data.write_csv(config.part_price_header.split(','),
+                     dmt_price_data,
+                     config.output_path+'part_prices.csv')
+write_data.write_csv(config.part_plant_header.split(','),
+                     dmt_plant_data,
+                     config.output_path+'part_plant.csv')
+
+
 
 # debugging info
 print(len(part_data))
@@ -30,14 +39,14 @@ print(dmt_part_data[0])
 print(len(dmt_price_data))
 print(dmt_price_data[0])
 
-print('\n')
+print('')
 
 counts = {}
 for i in dmt_part_data:
     counts[i['ClassID']] = counts.get(i['ClassID'], 0) + 1
-print(counts)
+print('ClassID breakdown:', counts)
 
 asbl_counts = {'1': 0, '0': 0}
 for i in part_data:
     asbl_counts[i['NRCCPrint']] += 1
-print(asbl_counts)
+print('Assembly count:', asbl_counts)
