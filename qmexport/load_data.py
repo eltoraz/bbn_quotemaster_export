@@ -1,14 +1,20 @@
-# import the data in CSV format, exported from MS Access
+"""Load data from a Quote Master-exported CSV file
+"""
 import csv
 
-# wrapper to allow pulling in data from other sources (e.g.,
-#  directly from the database)
 def qm_read(format='csv', filename=''):
+    """Return a list of dicts containing the data for the desired query;
+    or `None` if the specified format is unsupported
+    """
     if format == 'csv':
         return import_csv(filename)
+    else
+        return None
 
-# read data in from CSV
 def import_csv(filename):
+    """Return a list of dicts containing the data read from the
+    specified CSV file; the keys are the column headers
+    """
     data = []
     with open(filename) as csv_file:
         csv_reader = csv.DictReader(csv_file)
