@@ -33,3 +33,13 @@ part_header = (
         'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,SNFormat,'
         'SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
 part_price_header = 'Company,PartNum,PartDescription,UnitPrice'
+part_rev_header = (
+        'Company,PartNum,RevisionNum,RevShortDesc,RevDescription,'
+        'Approved,ApprovedDate,ApprovedBy,EffectiveDate,DrawNum,Plant,'
+        'MtlCostPct,ProcessMode')
+part_plant_header = (
+        'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
+        'SNMaskExample,SNBaseDataType,SNFormat')
+bom_header = (
+        'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'
+        'Plant,ECOGroupID')
