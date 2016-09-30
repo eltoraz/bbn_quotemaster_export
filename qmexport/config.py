@@ -2,9 +2,12 @@ output_path = 'output/'
 csv_path = 'ref/'
 csv_files = {'part': '20160930_1036_qm_part_query.csv',
              'part price': '20160930_1048_qm_part_prices_query.csv',
-             'part revision': '',
+             'part revision': '20160930_1503_qm_part_rev_query.csv',
              'bill of materials': '',
              'bill of operations': ''}
+
+def qualified_filename(query):
+    return csv_path + csv_files[query]
 
 # constants
 company = 'BBN'
@@ -33,13 +36,12 @@ part_header = (
         'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,SNFormat,'
         'SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
 part_price_header = 'Company,PartNum,PartDescription,UnitPrice'
-part_rev_header = (
-        'Company,PartNum,RevisionNum,RevShortDesc,RevDescription,'
-        'Approved,ApprovedDate,ApprovedBy,EffectiveDate,DrawNum,Plant,'
-        'MtlCostPct,ProcessMode')
 part_plant_header = (
         'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
         'SNMaskExample,SNBaseDataType,SNFormat')
+part_rev_header = (
+        'Company,PartNum,RevisionNum,RevShortDesc,RevDescription,'
+        'Approved,DrawNum,Plant,MtlCostPct,ProcessMode')
 bom_header = (
         'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'
         'Plant,ECOGroupID')
