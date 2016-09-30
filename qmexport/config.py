@@ -45,3 +45,6 @@ part_rev_header = (
 bom_header = (
         'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'
         'Plant,ECOGroupID')
+
+# dummy print file
+dummy_print = '\\\\poplar\\bbn_common\\PDFPrints\\Customer\\No_Print.pdf'
