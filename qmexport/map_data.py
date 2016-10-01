@@ -6,21 +6,20 @@ from qmexport import config
 
 def combined_description(entry):
     """Return the full description for the part entry, by appending
-    a non-empty `FirstOFDesc2` field to `FirstOfDesc1`, separated by
-    an underscore
+    a non-empty desc2 field to desc1, separated by an underscore
     """
-    description = entry['FirstOfDesc1']
-    if entry['FirstOFDesc2']:
-        description = description + '_' + entry['FirstOFDesc2']
+    description = entry[config.desc1]
+    if entry[config.desc2]:
+        description = description + '_' + entry[config.desc2]
 
     return description
 
 def convert_part_type(entry):
-    """Return the part type based on the Quote Master `Inclasskey` field
+    """Return the part type based on the Platinum class key field
     """
     part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
                          'ROCK': 'M', 'PARTS': 'M'}
-    return part_type_mapping[entry['Inclasskey']]
+    return part_type_mapping[entry[config.classkey]]
 
 def extract_rev_num(filename):
     """Return the revision number for the part by searching the PDF
@@ -44,19 +43,19 @@ def map_part(data):
         # derive DMT fields from QM data
         description = combined_description(entry)
         
-        classkey = entry['Inclasskey']
-        class_id = class_mapping[classkey] if classkey != 'PARTS' else class_mapping_parts[entry['NRCCPrint']]
+        classkey = entry[config.classkey]
+        class_id = class_mapping[classkey] if classkey != 'PARTS' else class_mapping_parts[entry[config.asbl_flag]]
 
         part_type = convert_part_type(entry)
         uom = uom_mapping[part_type]
 
-        prefix = 'FSC' if entry['FirstOFDesc2'][:3].upper() == 'FSC' else 'NCA'
-        suffix = 'ASBL' if entry['NRCCPrint'] == '1' else 'COMP'
+        prefix = 'FSC' if entry[config.desc2][:3].upper() == 'FSC' else 'NCA'
+        suffix = 'ASBL' if entry[config.asbl_flag] == '1' else 'COMP'
         prod_code = prefix + '-' + suffix if part_type == 'M' else 'PURCHASE'
 
         # create a dict from the constants, data from QM, and data mappings
         dmt_entry['Company'] = config.company
-        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['PartNum'] = entry[config.partnum]
         dmt_entry['SearchWord'] = description[:8]
         dmt_entry['PartDescription'] = description
         dmt_entry['ClassID'] = class_id
@@ -66,7 +65,7 @@ def map_part(data):
         dmt_entry['PricePerCode'] = config.price_per_code
         dmt_entry['ProdCode'] = prod_code
         dmt_entry['SalesUM'] = uom
-        dmt_entry['UsePartRev'] = part_type == 'M'
+        dmt_entry['UsePartRev'] = (part_type == 'M')
         dmt_entry['SNFormat'] = config.sn_format if part_type == 'M' else ''
         dmt_entry['SNBaseDataType'] = config.sn_base_data_type if part_type == 'M' else ''
         dmt_entry['SNMask'] = config.sn_mask if part_type == 'M' else ''
@@ -87,7 +86,7 @@ def map_part_prices(data):
         dmt_entry = {}
 
         dmt_entry['Company'] = config.company
-        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['PartNum'] = entry[config.partnum]
         dmt_entry['PartDescription'] = combined_description(entry)
         dmt_entry['UnitPrice'] = entry['PRICE']
 
@@ -106,7 +105,7 @@ def map_part_plant(data):
 
         dmt_entry['Company'] = config.company
         dmt_entry['Plant'] = config.plant
-        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['PartNum'] = entry[config.partnum]
         dmt_entry['PrimWhse'] = config.prim_whse
         dmt_entry['SourceType'] = part_type
         dmt_entry['CostMethod'] = config.cost_method
@@ -126,23 +125,23 @@ def map_part_rev(data):
     for entry in data:
         dmt_entry = {}
 
-        revision_num = extract_rev_num(entry['Image_Path'])
+        revision_num = extract_rev_num(entry[config.print_path])
         rev_description = 'Revision ' + revision_num
 
         # drawing number should be in Process_Plan field, but some entries
         #  haven't been updated to new format
-        proc_plan = entry['Process_Plan']
+        proc_plan = entry[config.drawnum]
         draw_num_re = '^[a-zA-Z]{3}-\d{3}(-\w{1,2})?'
 
         dmt_entry['Company'] = config.company
-        dmt_entry['PartNum'] = entry['Master_Plat_Part_Num']
+        dmt_entry['PartNum'] = entry[config.partnum]
         dmt_entry['RevisionNum'] = revision_num
         dmt_entry['RevShortDesc'] = rev_description
         dmt_entry['RevDescription'] = rev_description
         dmt_entry['Approved'] = True
         dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
         dmt_entry['Plant'] = config.plant
-        dmt_entry['MtlCostPct'] = entry['FirstOfStdcost']
+        dmt_entry['MtlCostPct'] = entry[config.stdcost]
         dmt_entry['ProcessMode'] = config.process_mode
 
         dmt_data.append(dmt_entry)

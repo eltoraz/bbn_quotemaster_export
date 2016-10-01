@@ -23,7 +23,7 @@ cost_method = 'F'
 
 eco_group_id = 'DMT'
 
-# constants dependent on part type (they'll have either this value or '')
+# constants dependent on part type 
 sn_format = 'NF#######'
 sn_base_data_type = 'MASK'
 sn_mask = 'NF'
@@ -48,3 +48,13 @@ bom_header = (
 
 # dummy print file
 dummy_print = '\\\\poplar\\bbn_common\\PDFPrints\\Customer\\No_Print.pdf'
+
+# query field names                   table of origin
+partnum = 'Master_Plat_Part_Num'    # QuoteMaster Main
+desc1 = 'FirstOfDesc1'              # 102_tbl_Iloc_Local
+desc2 = 'FirstOFDesc2'              # 102_tbl_Iloc_Local ('OF' not 'Of')
+classkey = 'Inclasskey'             # 102_tbl_Iloc_Local
+asbl_flag = 'NRCCPrint'             # QuoteMaster Main
+stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
+drawnum = 'Process_Plan'            # QuoteMaster Main
+print_path = 'Image_Path'           # 3901_tbl_Blueprint_Path
