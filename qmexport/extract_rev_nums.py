@@ -7,24 +7,31 @@ import re
 import PyPDF2
 from qmexport import config, load_data
 
+def initialize():
+    """Read in the data to prepare to extract the part revision
+    numbers from PDFs
+    """
+    part_rev_filename = config.qualified_filename('part revision')
+    return load_data.qm_read(format='csv', filename=part_rev_filename)
+
 def extract_rev_num(page_content):
     """Return and extract the revision number from the text on
     the PDF print's first page
     """
-    rev_num = '01'
-    rev_num_regex = '[Rr]ev(?:\.?|ision):?\s*(\w{2})'
+    rev_num_regex = '[Rr]ev(?:\.?|ision):?\s*(\d{1,2})'
+
+    regex_match = re.search(rev_num_regex, page_content)
+    rev_num = regex_match.group(1) if regex_match else 'NULL'
 
     return rev_num
 
-def start_extraction():
+def parse_pdfs(part_rev_data):
     """Start the extraction process, loading the print paths from
     the CSV file, opening them, and reading off the text
     """
-    part_rev_filename = config.qualified_filename('part revision')
-    part_rev_data = load_data.qm_read(format='csv', filename=part_rev_filename)
-
+    revisions = {}
     for entry in part_rev_data:
-        path_str = entry['Image_Path']
+        path_str = entry[config.print_path]
         if path_str != config.dummy_print:
             with open(os.path.normpath(path_str), 'rb') as pdf_file:
                 pdf_reader = PyPDF2.PdfFileReader(pdf_file)
@@ -33,3 +40,11 @@ def start_extraction():
                 rev_num = extract_rev_num(page_content)
         else:
             rev_num = 'NULL'
+
+        revisions[entry[partnum]] = rev_num
+
+    return revisions
+
+def run_extraction():
+    part_rev_data = initialize()
+    revisions = parse_pdfs(part_rev_data)
