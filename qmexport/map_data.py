@@ -2,7 +2,7 @@
 values to their Epicor IDs)
 """
 import re
-from qmexport import config
+from qmexport import config, parse_prints
 from qmexport.part import Part
 
 def combined_description(desc1, desc2):
@@ -15,16 +15,9 @@ def combined_description(desc1, desc2):
 
     return description
 
-def extract_rev_num(filename):
-    """Return the revision number for the part by searching the PDF
-    specified by `filename`
-    """
-    rev_num = '00'
-
-    return rev_num
-
 def _map_part_base(entry):
     """Map the fields from the Part table in Epicor DMT
+
     Return a dict with keys as the Epicor fieldnames, mapped
     to the converted Quote Master values
     """
@@ -71,6 +64,7 @@ def _map_part_base(entry):
 
 def _map_part_plnt(entry):
     """Map the fields from the Part Plant table in Epicor DMT
+
     Return a dict with keys as the Epicor fieldnames, mapped
     to the converted Quote Master values
     """
@@ -84,13 +78,16 @@ def _map_part_plnt(entry):
 
     return dmt_entry
 
-def _map_part_revn(entry):
+def _map_part_revn(entry, rev_dict):
     """Map the fields from the Part Revision table in Epicor DMT
+
+    Aside from the entry, takes a dictionary of parts->rev num
+
     Return a dict with keys as the Epicor fieldnames, mapped
     to the converted Quote Master values
     """
     dmt_entry = {}
-    revision_num = extract_rev_num(entry[config.print_path])
+    revision_num = rev_dict.get(entry[config.partnum], '')
     rev_description = 'Revision ' + revision_num
 
     # drawing number should be in Process_Plan field, but some entries
@@ -112,11 +109,14 @@ def map_part(data):
     """Convert Quote Master part data to DMT format
     Return a dictionary mapping part numbers to Part objects
     """
+    # run the print parser to extract what revision numbers we can
+    rev_dict = parse_prints.parse_pdfs(data)
+
     dmt_data = {}
     for entry in data:
         working_part = Part(_map_part_base(entry))
         working_part.update(_map_part_plnt(entry))
-        working_part.update(_map_part_revn(entry))
+        working_part.update(_map_part_revn(entry, rev_dict))
 
         dmt_data[working_part.PartNum] = working_part
 

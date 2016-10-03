@@ -21,7 +21,7 @@ def extract_rev_num(page_content):
     rev_num_regex = '[Rr]ev(?:\.?|ision):?\s*(\d{1,2})'
 
     regex_match = re.search(rev_num_regex, page_content)
-    rev_num = regex_match.group(1) if regex_match else 'NULL'
+    rev_num = regex_match.group(1) if regex_match else ''
 
     return rev_num
 
