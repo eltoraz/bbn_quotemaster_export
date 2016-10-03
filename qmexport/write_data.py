@@ -9,6 +9,8 @@ def write_csv(fieldnames, data, filename):
     with keys matching the fields)
     """
     with open(filename, 'w') as csv_file:
-        csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        csv_writer = csv.DictWriter(csv_file,
+                                    extrasaction='ignore',
+                                    fieldnames=fieldnames)
         csv_writer.writeheader()
-        csv_writer.writerows(data)
+        csv_writer.writerows([row.__dict__ for row in data.values()])

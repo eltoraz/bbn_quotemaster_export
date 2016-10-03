@@ -1,8 +1,6 @@
 output_path = 'output/'
 csv_path = 'ref/'
-csv_files = {'part': '20160930_1036_qm_part_query.csv',
-             'part price': '20160930_1048_qm_part_prices_query.csv',
-             'part revision': '20160930_1503_qm_part_rev_query.csv',
+csv_files = {'part': '20161003_1343_qm_part_query_all.csv',
              'bill of materials': '',
              'bill of operations': ''}
 
@@ -30,12 +28,29 @@ sn_mask = 'NF'
 sn_mask_example = 'NF9999999'
 net_weight_uom = 'LB'
 
+# Quote Master -> Epicor mappings
+class_mapping = {'SCRNR': 'FNSH', 'ROCK': 'FSHL'}
+class_mapping_parts = {'0': 'COMP', '1': 'ASBL'}
+uom_mapping = {'P': 'EAP', 'M': 'EAM'}
+part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
+                     'ROCK': 'M', 'PARTS': 'M'}
+
+# query field names                   table of origin
+partnum = 'Master_Plat_Part_Num'    # QuoteMaster Main
+desc1 = 'FirstOfDesc1'              # 102_tbl_Iloc_Local
+desc2 = 'FirstOFDesc2'              # 102_tbl_Iloc_Local ('OF' not 'Of')
+classkey = 'Inclasskey'             # 102_tbl_Iloc_Local
+asbl_flag = 'NRCCPrint'             # QuoteMaster Main
+stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
+drawnum = 'Process_Plan'            # QuoteMaster Main
+print_path = 'Image_Path'           # 3901_tbl_Blueprint_Path
+unit_price = 'PRICE'                # QM BOM
+
 # CSV headers
 part_header = (
         'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,'
-        'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,SNFormat,'
-        'SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
-part_price_header = 'Company,PartNum,PartDescription,UnitPrice'
+        'TypeCode,UnitPrice,PricePerCode,ProdCode,SalesUM,UsePartRev,'
+        'SNFormat,SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
 part_plant_header = (
         'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
         'SNMaskExample,SNBaseDataType,SNFormat')
@@ -48,13 +63,3 @@ bom_header = (
 
 # dummy print file
 dummy_print = '\\\\poplar\\bbn_common\\PDFPrints\\Customer\\No_Print.pdf'
-
-# query field names                   table of origin
-partnum = 'Master_Plat_Part_Num'    # QuoteMaster Main
-desc1 = 'FirstOfDesc1'              # 102_tbl_Iloc_Local
-desc2 = 'FirstOFDesc2'              # 102_tbl_Iloc_Local ('OF' not 'Of')
-classkey = 'Inclasskey'             # 102_tbl_Iloc_Local
-asbl_flag = 'NRCCPrint'             # QuoteMaster Main
-stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
-drawnum = 'Process_Plan'            # QuoteMaster Main
-print_path = 'Image_Path'           # 3901_tbl_Blueprint_Path

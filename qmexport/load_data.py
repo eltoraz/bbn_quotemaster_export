@@ -8,7 +8,7 @@ def qm_read(format='csv', filename=''):
     """
     if format == 'csv':
         return import_csv(filename)
-    else
+    else:
         return None
 
 def import_csv(filename):
