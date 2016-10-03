@@ -11,8 +11,8 @@ def initialize():
     """Read in the data to prepare to extract the part revision
     numbers from PDFs
     """
-    part_rev_filename = config.qualified_filename('part revision')
-    return load_data.qm_read(format='csv', filename=part_rev_filename)
+    filename = config.qualified_filename('part')
+    return load_data.qm_read(format='csv', filename=filename)
 
 def extract_rev_num(page_content):
     """Return and extract the revision number from the text on
@@ -32,16 +32,16 @@ def parse_pdfs(part_rev_data):
     revisions = {}
     for entry in part_rev_data:
         path_str = entry[config.print_path]
-        if path_str != config.dummy_print:
+        if path and path_str != config.dummy_print:
             with open(os.path.normpath(path_str), 'rb') as pdf_file:
                 pdf_reader = PyPDF2.PdfFileReader(pdf_file)
                 page_content = pdf_reader.getPage(0).extractText()
 
                 rev_num = extract_rev_num(page_content)
         else:
-            rev_num = 'NULL'
+            rev_num = ''
 
-        revisions[entry[partnum]] = rev_num
+        revisions[entry[config.partnum]] = rev_num
 
     return revisions
 
