@@ -32,7 +32,7 @@ def parse_pdfs(part_rev_data):
     revisions = {}
     for entry in part_rev_data:
         path_str = entry[config.print_path]
-        if path and path_str != config.dummy_print:
+        if path_str and path_str != config.dummy_print:
             with open(os.path.normpath(path_str), 'rb') as pdf_file:
                 pdf_reader = PyPDF2.PdfFileReader(pdf_file)
                 page_content = pdf_reader.getPage(0).extractText()

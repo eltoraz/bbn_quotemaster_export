@@ -55,7 +55,7 @@ part_plant_header = (
         'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
         'SNMaskExample,SNBaseDataType,SNFormat')
 part_rev_header = (
-        'Company,PartNum,RevisionNum,RevShortDesc,RevDescription,'
+        'Company,PartNum,RevisionNum,RevShortDesc,'
         'Approved,DrawNum,Plant,MtlCostPct,ProcessMode')
 bom_header = (
         'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'

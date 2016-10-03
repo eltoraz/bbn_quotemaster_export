@@ -88,7 +88,6 @@ def _map_part_revn(entry, rev_dict):
     """
     dmt_entry = {}
     revision_num = rev_dict.get(entry[config.partnum], '')
-    rev_description = 'Revision ' + revision_num
 
     # drawing number should be in Process_Plan field, but some entries
     #  haven't been updated to new format
@@ -96,8 +95,7 @@ def _map_part_revn(entry, rev_dict):
     draw_num_re = '^[a-zA-Z]{3}-\d{3}(-\w{1,2})?'
 
     dmt_entry['RevisionNum'] = revision_num
-    dmt_entry['RevShortDesc'] = rev_description
-    dmt_entry['RevDescription'] = rev_description
+    dmt_entry['RevShortDesc'] = 'Revision ' + revision_num
     dmt_entry['Approved'] = True
     dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
     dmt_entry['MtlCostPct'] = entry[config.stdcost]
