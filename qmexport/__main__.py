@@ -16,15 +16,17 @@ part_filename = config.qualified_filename('part')
 bom_filename = config.qualified_filename('bill of materials')
 boo_filename = config.qualified_filename('bill of operations')
 
-part_data = load_data.qm_read(format='csv', filename=part_filename)
-bom_data = load_data.qm_read(format='csv', filename=bom_filename)
+part_data = load_data.qm_read('csv', part_filename)
+bom_data = load_data.qm_read('csv', bom_filename)
 boo_data = load_data.qm_read('csv', boo_filename)
+
+rev_dict = {}
 
 # map QM values to fields expected by DMT, scrubbing & 
 #  reformatting as necessary
 dmt_part_data = map_part.map_part(part_data)
 dmt_bom_data = map_bom.map_bom(bom_data, rev_dict)
-dmt_boo_data = map_boo.map_boo(bom_data, rev_dict)
+dmt_boo_data = map_boo.map_boo(boo_data, rev_dict)
 
 # export the Epicor-friendly data
 write_data.write_csv(Part.expected_fields,
@@ -41,6 +43,12 @@ write_data.write_csv(config.part_rev_header.split(','),
                      dmt_part_data,
                      config.output_path+'part_rev.csv')
 
+write_data.write_csv(config.bom_header.split(','),
+                     [row for key in dmt_bom_data for row in dmt_bom_data[key]],
+                     config.output_path+'bom.csv')
+write_data.write_csv(config.boo_header.split(','),
+                     [row for key in dmt_boo_data for row in dmt_boo_data[key]],
+                     config.output_path+'boo.csv')
 
 # --- DEBUGGING ---
 print('---PART---')
@@ -53,6 +61,7 @@ first = dmt_part_data[part_data[0][config.partnum]]
 print(first)
 
 print('')
+
 
 '''
 counts = {}
