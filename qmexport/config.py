@@ -46,16 +46,17 @@ asbl_flag = 'NRCCPrint'             # QuoteMaster Main
 stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
 drawnum = 'Process_Plan'            # QuoteMaster Main
 unit_price = 'PRICE'                # QM BOM
-mtl_partnum = 'Plat_Item_Number'    # QM BOM
+mtl_partnum = 'Plat_Item_Num'       # QM BOM
 qty_per = 'QTY'                     # QM BOM
 opr_seq = 'Sequence_Number'         # QM BOO
 op_code = 'MACHINE_Center'          # QM BOO
 op_desc = 'Process - DESC'          # QM BOO
 
 # CSV headers
+# TODO: add UnitPrice back in after TypeCode?
 part_header = (
         'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,'
-        'TypeCode,UnitPrice,PricePerCode,ProdCode,SalesUM,UsePartRev,'
+        'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,'
         'SNFormat,SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
 part_plant_header = (
         'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
