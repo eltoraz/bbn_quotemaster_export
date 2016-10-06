@@ -8,9 +8,13 @@ def write_csv(fieldnames, data, filename):
     specified by `fieldnames` and body in `data` (a list of dicts
     with keys matching the fields)
     """
-    with open(filename, 'w') as csv_file:
+    with open(filename, 'w', encoding='iso8859_15') as csv_file:
         csv_writer = csv.DictWriter(csv_file,
                                     extrasaction='ignore',
                                     fieldnames=fieldnames)
         csv_writer.writeheader()
-        csv_writer.writerows([row.__dict__ for row in data.values()])
+        if isinstance(data, dict):
+            csv_writer.writerows([row.__dict__ for row in data.values()])
+        else:
+            # passed a straight-up list of rows
+            csv_writer.writerows([row.__dict__ for row in data])

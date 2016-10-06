@@ -16,7 +16,7 @@ def import_csv(filename):
     specified CSV file; the keys are the column headers
     """
     data = []
-    with open(filename) as csv_file:
+    with open(filename, encoding='iso8859_15') as csv_file:
         csv_reader = csv.DictReader(csv_file)
         for row in csv_reader:
             data.append({a: row[a].strip() for a in row})
