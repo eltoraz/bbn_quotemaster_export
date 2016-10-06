@@ -4,7 +4,7 @@ from orderedset import OrderedSet
 from qmexport import config
 from qmexport.dmt_row import DMT_Row
 
-Class Part(DMT_Row)
+class Part(DMT_Row):
     """A part, with fields from Epicor's Part, Part Revision,
     and Part Plant tables (as named in the DMT)
 
