@@ -50,7 +50,7 @@ def _map_part_base(entry):
     dmt_entry['IUM'] = uom
     dmt_entry['PUM'] = uom
     dmt_entry['TypeCode'] = part_type
-    dmt_entry['UnitPrice'] = entry[config.unit_price]
+    #dmt_entry['UnitPrice'] = entry[config.unit_price]
     dmt_entry['PricePerCode'] = config.price_per_code
     dmt_entry['ProdCode'] = prod_code
     dmt_entry['SalesUM'] = uom
@@ -113,7 +113,9 @@ def map_part(data):
     for entry in data:
         working_part = Part(_map_part_base(entry))
         working_part.update(_map_part_plnt(entry))
-        working_part.update(_map_part_revn(entry, rev_dict))
+        # TODO: refactor to remove this dict reference, since it won't
+        #       be known at this point anyway
+        working_part.update(_map_part_revn(entry, {}))
 
         dmt_data[working_part.PartNum] = working_part
 
