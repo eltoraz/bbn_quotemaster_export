@@ -2,7 +2,7 @@
 values to their Epicor IDs)
 """
 import re
-from qmexport import config, parse_prints
+from qmexport import config
 from qmexport.part import Part
 
 def combined_description(desc1, desc2):
@@ -107,9 +107,6 @@ def map_part(data):
     """Convert Quote Master part data to DMT format
     Return a dictionary mapping part numbers to Part objects
     """
-    # run the print parser to extract what revision numbers we can
-    rev_dict = parse_prints.parse_pdfs(data)
-
     dmt_data = {}
     for entry in data:
         working_part = Part(_map_part_base(entry))

@@ -33,11 +33,14 @@ def parse_pdfs(part_rev_data):
     for entry in part_rev_data:
         path_str = entry[config.print_path]
         if path_str and path_str != config.dummy_print:
-            with open(os.path.normpath(path_str), 'rb') as pdf_file:
-                pdf_reader = PyPDF2.PdfFileReader(pdf_file)
-                page_content = pdf_reader.getPage(0).extractText()
+            try:
+                with open(os.path.normpath(path_str), 'rb') as pdf_file:
+                    pdf_reader = PyPDF2.PdfFileReader(pdf_file)
+                    page_content = pdf_reader.getPage(0).extractText()
 
-                rev_num = extract_rev_num(page_content)
+                    rev_num = extract_rev_num(page_content)
+            except FileNotFoundError:
+                rev_num = ''
         else:
             rev_num = ''
 
