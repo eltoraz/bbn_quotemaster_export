@@ -1,8 +1,8 @@
 output_path = 'output/'
 csv_path = 'ref/'
-csv_files = {'part': '20161003_1343_qm_part_query_all.csv',
-             'bill of materials': '',
-             'bill of operations': ''}
+csv_files = {'part': '20161006_1532_qm_part_query_all.csv',
+             'bill of materials': '20161006_1217_qm_bom_query.csv',
+             'bill of operations': '20161006_1235_qm_boo_query.csv'}
 
 def qualified_filename(query):
     return csv_path + csv_files[query]
@@ -45,7 +45,6 @@ classkey = 'Inclasskey'             # 102_tbl_Iloc_Local
 asbl_flag = 'NRCCPrint'             # QuoteMaster Main
 stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
 drawnum = 'Process_Plan'            # QuoteMaster Main
-print_path = 'Image_Path'           # 3901_tbl_Blueprint_Path
 unit_price = 'PRICE'                # QM BOM
 mtl_partnum = 'Plat_Item_Number'    # QM BOM
 qty_per = 'QTY'                     # QM BOM
@@ -69,6 +68,3 @@ bom_header = (
         'Plant,ECOGroupID')
 boo_header = (
         'Company,PartNum,RevisionNum,OprSeq,OpCode,OpDesc,Plant,ECOGroupID')
-
-# dummy print file
-dummy_print = '\\\\poplar\\bbn_common\\PDFPrints\\Customer\\No_Print.pdf'

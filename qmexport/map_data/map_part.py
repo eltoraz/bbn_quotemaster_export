@@ -6,10 +6,6 @@ import re
 from qmexport import config
 
 from qmexport.part import Part
-from qmexport.material import Material
-from qmexport.operation import Operation
-
-# TODO: revision dict
 
 def combined_description(desc1, desc2):
     """Return the full description for the part entry, by appending
@@ -120,79 +116,5 @@ def map_part(data):
         working_part.update(_map_part_revn(entry, rev_dict))
 
         dmt_data[working_part.PartNum] = working_part
-
-    return dmt_data
-
-def _map_material(entry, mtl_seq, rev_dict):
-    """Map the fields from the Bill of Materials table in Epicor DMT
-
-    Return a dict with keys as the Epicor fieldnames, mapped to the
-    converted values from Quote Master
-    """
-    dmt_entry = {}
-
-    dmt_entry['Company'] = config.company
-    dmt_entry['PartNum'] = entry[config.partnum]
-    dmt_entry['RevisionNum'] = rev_dict.get(entry[config.partnum], '')
-    dmt_entry['MtlSeq'] = mtl_seq
-    dmt_entry['MtlPartNum'] = entry[config.mtl_partnum]
-    dmt_entry['QtyPer'] = round(1.0 / float(entry[config.qty_per]))
-    dmt_entry['Plant'] = config.plant
-    dmt_entry['ECOGroupID'] = config.eco_group_id
-
-    return dmt_entry
-
-def map_bom(data):
-    """Convert Quote Master supply data to DMT format for bill of materials
-
-    Return a dictionary mapping part numbers to a list of Material objects
-    corresponding to that part
-    """
-    dmt_data = {}
-    for entry in data:
-        mtl_seq = (len(dmt_data.get(entry[config.partnum], [])) + 1) * 10
-        working_material = Material(_map_material(entry, mtl_seq, rev_dict))
-
-        if entry[config.partnum] in dmt_data:
-            dmt_data[entry[config.partnum]].append(working_material)
-        else:
-            dmt_data[entry[config.partnum]] = [working_material]
-
-    return dmt_data
-
-def _map_operation(entry, rev_dict):
-    """Map the fields from the Bill of Operations in Epicor DMT
-
-    Return a dict with keys as the Epicor fieldnames, mapped to the
-    converted values from Quote Master
-    """
-    dmt_entry = {}
-
-    dmt_entry['Company'] = config.company
-    dmt_entry['PartNum'] = entry[config.partnum]
-    dmt_entry['RevisionNum'] = rev_dict.get(entry[config.partnum], '')
-    dmt_entry['OprSeq'] = entry[config.opr_seq]
-    dmt_entry['OpCode'] = config.operation_mapping[entry[config.op_code]]
-    dmt_entry['OpDesc'] = entry[config.op_desc]
-    dmt_entry['Plant'] = config.plant
-    dmt_entry['ECOGroupID'] = config.eco_group_id
-
-    return dmt_entry
-
-def map_boo(data):
-    """Convert Quote Master process plan data to DMT format for
-    bill of operations
-
-    Return a dictionary mapping part numbers to a list of Operation
-    objects corresponding to that part
-    """
-    dmt_data = {}
-    for entry in data:
-        working_operation = Operation(_map_operation(entry, rev_dict))
-
-        if entry[config.partnum] in dmt_data:
-            dmt_data[entry[config.partnum]].append(working_operation)
-        else:
-            dmt_data[entry[config.partnum]] = [working_operation]
 
     return dmt_data
