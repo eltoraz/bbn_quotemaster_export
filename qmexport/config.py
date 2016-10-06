@@ -35,6 +35,8 @@ uom_mapping = {'P': 'EAP', 'M': 'EAM'}
 part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
                      'ROCK': 'M', 'PARTS': 'M'}
 
+operation_mapping = {}
+
 # query field names                   table of origin
 partnum = 'Master_Plat_Part_Num'    # QuoteMaster Main
 desc1 = 'FirstOfDesc1'              # 102_tbl_Iloc_Local
@@ -45,6 +47,11 @@ stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
 drawnum = 'Process_Plan'            # QuoteMaster Main
 print_path = 'Image_Path'           # 3901_tbl_Blueprint_Path
 unit_price = 'PRICE'                # QM BOM
+mtl_partnum = 'Plat_Item_Number'    # QM BOM
+qty_per = 'QTY'                     # QM BOM
+opr_seq = 'Sequence_Number'         # QM BOO
+op_code = 'MACHINE_Center'          # QM BOO
+op_desc = 'Process - DESC'          # QM BOO
 
 # CSV headers
 part_header = (
@@ -60,6 +67,8 @@ part_rev_header = (
 bom_header = (
         'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'
         'Plant,ECOGroupID')
+boo_header = (
+        'Company,PartNum,RevisionNum,OprSeq,OpCode,OpDesc,Plant,ECOGroupID')
 
 # dummy print file
 dummy_print = '\\\\poplar\\bbn_common\\PDFPrints\\Customer\\No_Print.pdf'
