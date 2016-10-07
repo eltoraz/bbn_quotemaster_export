@@ -78,18 +78,25 @@ print('---BOO (DMT)---')
 print('BOO entries:', len(dmt_boo_data))
 print(dmt_boo_data[test_single_pn])
 
+# write files to test output data in DMT
+test_single_bom = [row for row in dmt_bom_data[test_single_pn]]
+test_single_boo = [row for row in dmt_boo_data[test_single_pn]]
+
+test_single_part = {row.__dict__['MtlPartNum']: dmt_part_data[row.__dict__['MtlPartNum']] for row in test_single_bom}
+test_single_part[test_single_pn] = dmt_part_data[test_single_pn]
+
 write_data.write_csv(config.part_header.split(','),
-                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     test_single_part,
                      config.output_path+'TEST_1part.csv')
 write_data.write_csv(config.part_plant_header.split(','),
-                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     test_single_part,
                      config.output_path+'TEST_2part_plant.csv')
 write_data.write_csv(config.part_rev_header.split(','),
-                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     test_single_part,
                      config.output_path+'TEST_3part_rev.csv')
 write_data.write_csv(Material.expected_fields,
-                     [row for row in dmt_bom_data[test_single_pn]],
+                     test_single_bom,
                      config.output_path+'TEST_4bom.csv')
 write_data.write_csv(Operation.expected_fields,
-                     [row for row in dmt_boo_data[test_single_pn]],
+                     test_single_boo,
                      config.output_path+'TEST_5boo.csv')

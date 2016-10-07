@@ -21,7 +21,7 @@ def _map_operation(entry, rev_dict):
     dmt_entry['RevisionNum'] = rev_dict.get(entry[config.partnum], '')
     dmt_entry['OprSeq'] = entry[config.opr_seq]
     dmt_entry['OpCode'] = config.operation_mapping.get(entry[config.op_code], fallback_op)
-    dmt_entry['OpDesc'] = entry[config.op_desc]
+    dmt_entry['OpDesc'] = entry[config.op_desc] # TODO: OpDesc caps at 30char
     dmt_entry['Plant'] = config.plant
     dmt_entry['ECOGroupID'] = config.eco_group_id
 
