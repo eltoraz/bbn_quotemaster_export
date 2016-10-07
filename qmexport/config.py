@@ -1,6 +1,6 @@
 output_path = 'output/'
 csv_path = 'ref/'
-csv_files = {'part': '20161006_1532_qm_part_query_all.csv',
+csv_files = {'part': '20161007_1140_qm_part_query_all.csv',
              'bill of materials': '20161006_1217_qm_bom_query.csv',
              'bill of operations': '20161006_1235_qm_boo_query.csv'}
 
