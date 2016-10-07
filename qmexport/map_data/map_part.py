@@ -30,11 +30,12 @@ def _map_part_base(entry):
 
     classkey = entry[config.classkey]
     if classkey != 'PARTS':
-        class_id = config.class_mapping[classkey]
+        class_id = config.class_mapping.get(classkey, '!' + classkey + '!')
     else:
         class_id = config.class_mapping_parts[entry[config.asbl_flag]]
 
-    part_type = config.part_type_mapping[entry[config.classkey]]
+    # default part type is 'P' (raw material), since there are so many
+    part_type = config.part_type_mapping.get(entry[config.classkey], 'P')
     uom = config.uom_mapping[part_type]
 
     prefix = 'FSC' if entry[config.desc2][:3].upper() == 'FSC' else 'NCA'
@@ -70,7 +71,7 @@ def _map_part_plnt(entry):
     to the converted Quote Master values
     """
     dmt_entry = {}
-    part_type = config.part_type_mapping[entry[config.classkey]]
+    part_type = config.part_type_mapping.get(entry[config.classkey], 'P')
 
     dmt_entry['Plant'] = config.plant
     dmt_entry['PrimWhse'] = config.prim_whse
@@ -94,7 +95,9 @@ def _map_part_revn(entry):
     proc_plan = entry[config.drawnum]
     draw_num_re = '[a-zA-Z]{3}-\d{3}'
 
-    dmt_entry['RevisionNum'] = ''
+    revision_num = ''
+
+    dmt_entry['RevisionNum'] = revision_num
     dmt_entry['RevShortDesc'] = 'Revision ' + revision_num
     dmt_entry['Approved'] = True
     dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
