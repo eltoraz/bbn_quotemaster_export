@@ -2,7 +2,7 @@
 """
 import csv
 
-def qm_read(format='csv', filename=''):
+def import_data(format='csv', filename=''):
     """Return a list of dicts containing the data for the desired query;
     or `None` if the specified format is unsupported
     """
