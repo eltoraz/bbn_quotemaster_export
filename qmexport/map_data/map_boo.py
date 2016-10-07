@@ -13,11 +13,14 @@ def _map_operation(entry, rev_dict):
     """
     dmt_entry = {}
 
+    # default op when not in the mapping is 'Assembly Step 1'
+    fallback_op = '110-1'
+
     dmt_entry['Company'] = config.company
     dmt_entry['PartNum'] = entry[config.partnum]
     dmt_entry['RevisionNum'] = rev_dict.get(entry[config.partnum], '')
     dmt_entry['OprSeq'] = entry[config.opr_seq]
-    dmt_entry['OpCode'] = config.operation_mapping.get(entry[config.op_code], 'UNKNOWN OP')
+    dmt_entry['OpCode'] = config.operation_mapping.get(entry[config.op_code], fallback_op)
     dmt_entry['OpDesc'] = entry[config.op_desc]
     dmt_entry['Plant'] = config.plant
     dmt_entry['ECOGroupID'] = config.eco_group_id

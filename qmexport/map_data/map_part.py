@@ -45,7 +45,7 @@ def _map_part_base(entry):
     # create a dict from the constants, data from QM, and data mappings
     dmt_entry['Company'] = config.company
     dmt_entry['PartNum'] = entry[config.partnum]
-    dmt_entry['SearchWord'] = description[:8]
+    dmt_entry['SearchWord'] = description[:8].strip()
     dmt_entry['PartDescription'] = description
     dmt_entry['ClassID'] = class_id
     dmt_entry['IUM'] = uom
