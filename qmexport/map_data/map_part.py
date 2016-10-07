@@ -79,7 +79,7 @@ def _map_part_plnt(entry):
 
     return dmt_entry
 
-def _map_part_revn(entry, rev_dict):
+def _map_part_revn(entry):
     """Map the fields from the Part Revision table in Epicor DMT
 
     Aside from the entry, takes a dictionary of parts->rev num
@@ -88,14 +88,13 @@ def _map_part_revn(entry, rev_dict):
     to the converted Quote Master values
     """
     dmt_entry = {}
-    revision_num = rev_dict.get(entry[config.partnum], '')
 
     # drawing number should be in Process_Plan field, but some entries
     #  haven't been updated to new format
     proc_plan = entry[config.drawnum]
-    draw_num_re = '^[a-zA-Z]{3}-\d{3}(-\w{1,2})?'
+    draw_num_re = '[a-zA-Z]{3}-\d{3}'
 
-    dmt_entry['RevisionNum'] = revision_num
+    dmt_entry['RevisionNum'] = ''
     dmt_entry['RevShortDesc'] = 'Revision ' + revision_num
     dmt_entry['Approved'] = True
     dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
@@ -111,9 +110,7 @@ def map_part(data):
     for entry in data:
         working_part = Part(_map_part_base(entry))
         working_part.update(_map_part_plnt(entry))
-        # TODO: refactor to remove this dict reference, since it won't
-        #       be known at this point anyway
-        working_part.update(_map_part_revn(entry, {}))
+        working_part.update(_map_part_revn(entry))
 
         dmt_data[working_part.PartNum] = working_part
 
