@@ -22,17 +22,18 @@ part_data = load_data.import_data('csv', part_filename)
 bom_data = load_data.import_data('csv', bom_filename)
 boo_data = load_data.import_data('csv', boo_filename)
 
-# import part revisions if they've been input
+# map QM values to fields expected by DMT, scrubbing & 
+#  reformatting as necessary
+dmt_part_data = map_part.map_part(part_data)
+
+# import part revisions (if they exist) for use in BOM/BOO
 part_rev_filename = config.qualified_filename('part revision')
 rev_dict = {}
 if os.path.isfile(part_rev_filename):
     rev_data = load_data.import_data('csv', part_rev_filename)
     rev_dict = map_rev.map_rev(rev_data)
-    #map_rev.update_parts(dmt_part_data, rev_dict)
+    map_rev.update_parts(dmt_part_data, rev_dict)
 
-# map QM values to fields expected by DMT, scrubbing & 
-#  reformatting as necessary
-dmt_part_data = map_part.map_part(part_data)
 dmt_bom_data = map_bom.map_bom(bom_data, rev_dict)
 dmt_boo_data = map_boo.map_boo(boo_data, rev_dict)
 
@@ -51,34 +52,44 @@ write_data.write_csv(config.part_rev_header.split(','),
                      dmt_part_data,
                      config.output_path+'part_rev.csv')
 
-write_data.write_csv(config.bom_header.split(','),
+write_data.write_csv(Material.expected_fields,
                      [row for key in dmt_bom_data for row in dmt_bom_data[key]],
                      config.output_path+'bom.csv')
-write_data.write_csv(config.boo_header.split(','),
+write_data.write_csv(Operation.expected_fields,
                      [row for key in dmt_boo_data for row in dmt_boo_data[key]],
                      config.output_path+'boo.csv')
 
 # --- DEBUGGING ---
 print('---PART---')
-print(len(part_data))
+print('Raw part entries:', len(part_data))
 print(part_data[0])
 
+test_single_pn = 'AT11'
+
 print('---PART (DMT)---')
-print(len(dmt_part_data))
-first = dmt_part_data[part_data[0][config.partnum]]
-print(first)
+print('Processed part entries:', len(dmt_part_data))
+print(dmt_part_data[test_single_pn])
 
-print('')
+print('---BOM (DMT)---')
+print('BOM entries:', len(dmt_bom_data))
+print(dmt_bom_data[test_single_pn])
 
+print('---BOO (DMT)---')
+print('BOO entries:', len(dmt_boo_data))
+print(dmt_boo_data[test_single_pn])
 
-'''
-counts = {}
-for i in dmt_part_data:
-    counts[i['ClassID']] = counts.get(i['ClassID'], 0) + 1
-print('ClassID breakdown:', counts)
-
-asbl_counts = {'1': 0, '0': 0}
-for i in part_data:
-    asbl_counts[i['NRCCPrint']] += 1
-print('Assembly count:', asbl_counts)
-'''
+write_data.write_csv(config.part_header.split(','),
+                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     config.output_path+'TEST_1part.csv')
+write_data.write_csv(config.part_plant_header.split(','),
+                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     config.output_path+'TEST_2part_plant.csv')
+write_data.write_csv(config.part_rev_header.split(','),
+                     {test_single_pn: dmt_part_data[test_single_pn]},
+                     config.output_path+'TEST_3part_rev.csv')
+write_data.write_csv(Material.expected_fields,
+                     [row for row in dmt_bom_data[test_single_pn]],
+                     config.output_path+'TEST_4bom.csv')
+write_data.write_csv(Operation.expected_fields,
+                     [row for row in dmt_boo_data[test_single_pn]],
+                     config.output_path+'TEST_5boo.csv')
