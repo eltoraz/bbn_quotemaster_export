@@ -50,7 +50,6 @@ def _map_part_base(entry):
     dmt_entry['IUM'] = uom
     dmt_entry['PUM'] = uom
     dmt_entry['TypeCode'] = part_type
-    #dmt_entry['UnitPrice'] = entry[config.unit_price]
     dmt_entry['PricePerCode'] = config.price_per_code
     dmt_entry['ProdCode'] = prod_code
     dmt_entry['SalesUM'] = uom
@@ -100,7 +99,6 @@ def _map_part_revn(entry, rev_dict):
     dmt_entry['RevShortDesc'] = 'Revision ' + revision_num
     dmt_entry['Approved'] = True
     dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
-    dmt_entry['MtlCostPct'] = entry[config.stdcost]
     dmt_entry['ProcessMode'] = config.process_mode
 
     return dmt_entry

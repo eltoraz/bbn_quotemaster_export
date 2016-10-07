@@ -38,14 +38,13 @@ part_type_mapping = {'NFPPU': 'P', 'SCRNR': 'P', 'STOCK': 'P',
 operation_mapping = {}
 
 # query field names                   table of origin
-partnum = 'Master_Plat_Part_Num'    # QuoteMaster Main
-desc1 = 'FirstOfDesc1'              # 102_tbl_Iloc_Local
-desc2 = 'FirstOFDesc2'              # 102_tbl_Iloc_Local ('OF' not 'Of')
-classkey = 'Inclasskey'             # 102_tbl_Iloc_Local
+partnum = 'Itemkey'                 # Item Master
+desc1 = 'Itemdescription1'          # Item Master
+desc2 = 'Itemdescription2'          # Item Master
+classkey = 'Itemclasskey'           # Item Location
 asbl_flag = 'NRCCPrint'             # QuoteMaster Main
-stdcost = 'FirstOfStdcost'          # 102_tbl_Iloc_Local
+stdcost = 'Standardcost'            # Item Location
 drawnum = 'Process_Plan'            # QuoteMaster Main
-unit_price = 'PRICE'                # QM BOM
 mtl_partnum = 'Plat_Item_Num'       # QM BOM
 qty_per = 'QTY'                     # QM BOM
 opr_seq = 'Sequence_Number'         # QM BOO
@@ -53,7 +52,6 @@ op_code = 'MACHINE_Center'          # QM BOO
 op_desc = 'Process - DESC'          # QM BOO
 
 # CSV headers
-# TODO: add UnitPrice back in after TypeCode?
 part_header = (
         'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,'
         'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,'
@@ -63,7 +61,7 @@ part_plant_header = (
         'SNMaskExample,SNBaseDataType,SNFormat')
 part_rev_header = (
         'Company,PartNum,RevisionNum,RevShortDesc,'
-        'Approved,DrawNum,Plant,MtlCostPct,ProcessMode')
+        'Approved,DrawNum,Plant,ProcessMode')
 bom_header = (
         'Company,PartNum,RevisionNum,MtlSeq,MtlPartNum,QtyPer,'
         'Plant,ECOGroupID')

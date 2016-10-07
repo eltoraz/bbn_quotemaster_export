@@ -18,7 +18,7 @@ def _map_material(entry, mtl_seq, rev_dict):
     dmt_entry['RevisionNum'] = rev_dict.get(entry[config.partnum], '')
     dmt_entry['MtlSeq'] = mtl_seq
     dmt_entry['MtlPartNum'] = entry[config.mtl_partnum]
-    dmt_entry['QtyPer'] = round(1.0 / float(entry[config.qty_per]))
+    dmt_entry['QtyPer'] = entry[config.qty_per]
     dmt_entry['Plant'] = config.plant
     dmt_entry['ECOGroupID'] = config.eco_group_id
 
@@ -32,10 +32,6 @@ def map_bom(data, rev_dict):
     """
     dmt_data = {}
     for entry in data:
-        # TODO: need to make sure dropping the entry is desired behavior
-        if float(entry[config.qty_per]) == 0.0:
-            continue
-
         mtl_seq = (len(dmt_data.get(entry[config.partnum], [])) + 1) * 10
         working_material = Material(_map_material(entry, mtl_seq, rev_dict))
 
