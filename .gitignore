@@ -1,1 +1,5 @@
+# transient, dynamically generated output
 output/
+
+# lockfiles
+*#
