@@ -45,6 +45,7 @@ classkey = 'Itemclasskey'           # Item Location
 asbl_flag = 'NRCCPrint'             # QuoteMaster Main
 stdcost = 'Standardcost'            # Item Location
 drawnum = 'Process_Plan'            # QuoteMaster Main
+image_path = 'Image_Path'           # 3901_tbl_Blueprint_Path
 mtl_partnum = 'Plat_Item_Num'       # QM BOM
 qty_per = 'QTY'                     # QM BOM
 opr_seq = 'Sequence_Number'         # QM BOO
@@ -54,7 +55,7 @@ op_desc = 'Process - DESC'          # QM BOO
 # CSV headers
 part_header = (
         'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,'
-        'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,'
+        'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,ImageFileName,'
         'SNFormat,SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
 part_plant_header = (
         'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'

@@ -55,6 +55,7 @@ def _map_part_base(entry):
     dmt_entry['ProdCode'] = prod_code
     dmt_entry['SalesUM'] = uom
     dmt_entry['UsePartRev'] = (part_type == 'M')
+    dmt_entry['ImageFileName'] = entry[config.image_path]
     dmt_entry['SNFormat'] = config.sn_format if part_type == 'M' else ''
     dmt_entry['SNBaseDataType'] = config.sn_base_data_type if part_type == 'M' else ''
     dmt_entry['SNMask'] = config.sn_mask if part_type == 'M' else ''
@@ -93,14 +94,15 @@ def _map_part_revn(entry):
     # drawing number should be in Process_Plan field, but some entries
     #  haven't been updated to new format
     proc_plan = entry[config.drawnum]
-    draw_num_re = '[a-zA-Z]{3}-\d{3}'
+    draw_num_re = '([a-zA-Z]{3}-\d{3})'
+    draw_num_match = re.match(draw_num_re, proc_plan)
 
     revision_num = ''
 
     dmt_entry['RevisionNum'] = revision_num
     dmt_entry['RevShortDesc'] = 'Revision ' + revision_num
     dmt_entry['Approved'] = True
-    dmt_entry['DrawNum'] = proc_plan if re.match(draw_num_re, proc_plan) else ''
+    dmt_entry['DrawNum'] = draw_num_match.group(1) if draw_num_match else ''
     dmt_entry['ProcessMode'] = config.process_mode
 
     return dmt_entry
