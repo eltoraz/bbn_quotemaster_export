@@ -3,3 +3,6 @@ output/
 
 # lockfiles
 *#
+
+# compiled python
+*.pyc
