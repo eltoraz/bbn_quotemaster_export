@@ -6,6 +6,8 @@ csv_files = {'part': '20161007_1140_qm_part_query_all.csv',
              'part revision': 'part_rev_test.csv'}
 
 def qualified_filename(query):
+    """Return the path and filename for the specified reference file
+    """
     return csv_path + csv_files[query]
 
 # constants
