@@ -10,7 +10,130 @@ from qmexport.operation import Operation
 
 from qmexport.map_data import map_part, map_bom, map_boo, map_rev
 
-# TODO: revision dict
+def debug(test_single_pn):
+    """Print info about the data structures for debugging
+    """
+    # --- DEBUGGING ---
+    print('---PART---')
+    print('Raw part entries:', len(part_data))
+    print(part_data[0])
+
+    print('---PART (DMT)---')
+    print('Processed part entries:', len(dmt_part_data))
+    print(dmt_part_data[test_single_pn])
+
+    print('---BOM (DMT)---')
+    print('BOM entries:', len(dmt_bom_data))
+    print(dmt_bom_data[test_single_pn])
+
+    print('---BOO (DMT)---')
+    print('BOO entries:', len(dmt_boo_data))
+    print(dmt_boo_data[test_single_pn])
+
+    print('---MISSING PARTS REFERENCED IN BOM---')
+    missing_parts = set()
+    for row in dmt_bom_data:
+        for mat in dmt_bom_data[row]:
+            pn = mat.__dict__['PartNum']
+            mn = mat.__dict__['MtlPartNum']
+            if pn not in dmt_part_data:
+                missing_parts = set.union(missing_parts, {pn})
+            if mn not in dmt_part_data:
+                missing_parts = set.union(missing_parts, {mn})
+    print(len(missing_parts), 'orphaned parts:')
+    print(missing_parts)
+
+def resolve_bom(data, pn):
+    """Recurse over the rows in `data` belonging to part `pn` and
+    return a list containing all its dependent materials
+    """
+    header = 'MtlPartNum'
+    if pn in data:
+        master_list = data[pn]
+        working_list = []
+        for row in master_list:
+            working_list += resolve_bom(data, row.__dict__[header])
+        return master_list + working_list
+    else:
+        return []
+
+def resolve_boo(data, bom):
+    """Return a list of Operation objects corresponding to the hierarchy
+    of materials in the given BOM
+    """
+    working_list = []
+    for row in bom:
+        pn = row.__dict__['PartNum']
+        if pn in data:
+            working_list += data[pn]
+
+    return working_list
+
+def resolve_part_list(data, bom):
+    """Return a dict of part numbers to Part objects for the given
+    Bill of Materials (input as a list of Material objects); and
+    a set of parts not in the part list
+    """
+    working_part_list = {}
+    for mat in bom:
+        pn = mat.__dict__['PartNum']
+        mn = mat.__dict__['MtlPartNum']
+        working_part_list[pn] = data[pn]
+        working_part_list[mn] = data[mn]
+
+    return working_part_list
+
+def dmt_test(test_single_pn, test_complex_pn):
+    """Generate short CSV files to test program output with DMT
+    """
+    # single-layer part w/ associated BOM & BOO
+    test_single_bom = resolve_bom(dmt_bom_data, test_single_pn)
+    test_single_boo = resolve_boo(dmt_boo_data, test_single_bom)
+
+    test_single_part_list = resolve_part_list(dmt_part_data, test_single_bom)
+
+    write_data.write_csv(Part.expected_fields,
+                         test_single_part_list,
+                         config.output_path+'TEST_Apart_ALL.csv')
+    write_data.write_csv(config.part_header.split(','),
+                         test_single_part_list,
+                         config.output_path+'TEST_1part.csv')
+    write_data.write_csv(config.part_plant_header.split(','),
+                         test_single_part_list,
+                         config.output_path+'TEST_2part_plant.csv')
+    write_data.write_csv(config.part_rev_header.split(','),
+                         test_single_part_list,
+                         config.output_path+'TEST_3part_rev.csv')
+    write_data.write_csv(Material.expected_fields,
+                         test_single_bom,
+                         config.output_path+'TEST_4bom.csv')
+    write_data.write_csv(Operation.expected_fields,
+                         test_single_boo,
+                         config.output_path+'TEST_5boo.csv')
+
+    # multi-layer part w/ associated BOM & BOO
+    test_complex_bom = resolve_bom(dmt_bom_data, test_complex_pn)
+    test_complex_boo = resolve_boo(dmt_boo_data, test_complex_bom)
+    test_complex_part_list = resolve_part_list(dmt_part_data, test_complex_bom)
+
+    write_data.write_csv(Part.expected_fields,
+                         test_complex_part_list,
+                         config.output_path+'TEST_Bpart_ALL.csv')
+    write_data.write_csv(config.part_header.split(','),
+                         test_complex_part_list,
+                         config.output_path+'TEST_6part.csv')
+    write_data.write_csv(config.part_plant_header.split(','),
+                         test_complex_part_list,
+                         config.output_path+'TEST_7part_plant.csv')
+    write_data.write_csv(config.part_rev_header.split(','),
+                         test_complex_part_list,
+                         config.output_path+'TEST_8part_rev.csv')
+    write_data.write_csv(Material.expected_fields,
+                         test_complex_bom,
+                         config.output_path+'TEST_9bom.csv')
+    write_data.write_csv(Operation.expected_fields,
+                         test_complex_boo,
+                         config.output_path+'TEST_10boo.csv')
 
 # get the data
 # for now, by opening a CSV of the result set of the queries
@@ -59,44 +182,7 @@ write_data.write_csv(Operation.expected_fields,
                      [row for key in dmt_boo_data for row in dmt_boo_data[key]],
                      config.output_path+'boo.csv')
 
-# --- DEBUGGING ---
-print('---PART---')
-print('Raw part entries:', len(part_data))
-print(part_data[0])
-
 test_single_pn = 'AT11'
-
-print('---PART (DMT)---')
-print('Processed part entries:', len(dmt_part_data))
-print(dmt_part_data[test_single_pn])
-
-print('---BOM (DMT)---')
-print('BOM entries:', len(dmt_bom_data))
-print(dmt_bom_data[test_single_pn])
-
-print('---BOO (DMT)---')
-print('BOO entries:', len(dmt_boo_data))
-print(dmt_boo_data[test_single_pn])
-
-# write files to test output data in DMT
-test_single_bom = [row for row in dmt_bom_data[test_single_pn]]
-test_single_boo = [row for row in dmt_boo_data[test_single_pn]]
-
-test_single_part = {row.__dict__['MtlPartNum']: dmt_part_data[row.__dict__['MtlPartNum']] for row in test_single_bom}
-test_single_part[test_single_pn] = dmt_part_data[test_single_pn]
-
-write_data.write_csv(config.part_header.split(','),
-                     test_single_part,
-                     config.output_path+'TEST_1part.csv')
-write_data.write_csv(config.part_plant_header.split(','),
-                     test_single_part,
-                     config.output_path+'TEST_2part_plant.csv')
-write_data.write_csv(config.part_rev_header.split(','),
-                     test_single_part,
-                     config.output_path+'TEST_3part_rev.csv')
-write_data.write_csv(Material.expected_fields,
-                     test_single_bom,
-                     config.output_path+'TEST_4bom.csv')
-write_data.write_csv(Operation.expected_fields,
-                     test_single_boo,
-                     config.output_path+'TEST_5boo.csv')
+test_complex_pn = 'Y2233L-095-O-FRAME LF'
+debug(test_single_pn)
+dmt_test(test_single_pn, test_complex_pn)
