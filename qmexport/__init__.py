@@ -21,12 +21,14 @@ def debug(test_single_pn):
     print(len(dmt_part_data), 'processed part entries')
     #print(dmt_part_data[test_single_pn])
 
-    print('---BOM (DMT)---')
-    print(len(dmt_bom_data), 'BOM entries')
+    print('---BOM---')
+    print(len(bom_data), 'BOM entries read in')
+    print(len(dmt_bom_data), 'unique parts with BOM entries')
     #print(dmt_bom_data[test_single_pn])
 
-    print('---BOO (DMT)---')
-    print(len(dmt_boo_data), 'BOO entries')
+    print('---BOO---')
+    print(len(boo_data), 'BOO entries read in')
+    print(len(dmt_boo_data), 'unique parts with BOO entries')
     #print(dmt_boo_data[test_single_pn])
 
     print('---UNMAPPED CLASSKEYS---')
