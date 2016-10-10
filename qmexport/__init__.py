@@ -13,22 +13,38 @@ from qmexport.map_data import map_part, map_bom, map_boo, map_rev
 def debug(test_single_pn):
     """Print info about the data structures for debugging
     """
-    # --- DEBUGGING ---
     print('---PART---')
-    print('Raw part entries:', len(part_data))
-    print(part_data[0])
+    print(len(part_data), 'raw part entries')
+    #print(part_data[0])
 
     print('---PART (DMT)---')
-    print('Processed part entries:', len(dmt_part_data))
-    print(dmt_part_data[test_single_pn])
+    print(len(dmt_part_data), 'processed part entries')
+    #print(dmt_part_data[test_single_pn])
 
     print('---BOM (DMT)---')
-    print('BOM entries:', len(dmt_bom_data))
-    print(dmt_bom_data[test_single_pn])
+    print(len(dmt_bom_data), 'BOM entries')
+    #print(dmt_bom_data[test_single_pn])
 
     print('---BOO (DMT)---')
-    print('BOO entries:', len(dmt_boo_data))
-    print(dmt_boo_data[test_single_pn])
+    print(len(dmt_boo_data), 'BOO entries')
+    #print(dmt_boo_data[test_single_pn])
+
+    print('---UNMAPPED CLASSKEYS---')
+    unmapped_classkeys = set()
+    for row in dmt_part_data:
+        classid = dmt_part_data[row].__dict__['ClassID']
+        if classid[0] == '!':
+            unmapped_classkeys = set.union(unmapped_classkeys, {classid[1:-1]})
+    print(len(unmapped_classkeys), 'classkeys not mapped to Epicor values:')
+    print(unmapped_classkeys)
+
+    print('---UNMAPPED OPERATIONS---')
+    missing_ops = set()
+    for row in boo_data:
+        if row[config.op_code] not in config.operation_mapping:
+            missing_ops = set.union(missing_ops, {row[config.op_code]})
+    print(len(missing_ops), 'operations not mapped to Epicor values:')
+    print(missing_ops)
 
     print('---MISSING PARTS REFERENCED IN BOM---')
     missing_parts = set()
