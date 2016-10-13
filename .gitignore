@@ -6,3 +6,6 @@ output/
 
 # compiled python
 *.pyc
+
+# captured debut output
+output.txt
