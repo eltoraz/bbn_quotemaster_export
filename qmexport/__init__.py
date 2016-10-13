@@ -178,6 +178,11 @@ if os.path.isfile(part_rev_filename):
 dmt_bom_data = map_bom.map_bom(bom_data, rev_dict)
 dmt_boo_data = map_boo.map_boo(boo_data, rev_dict)
 
+# only parts that appear in a BOM or BOO strictly need revision numbers
+rev_subset = list(dmt_bom_data.keys())
+rev_subset.extend([i for i in dmt_boo_data.keys() if i not in rev_subset])
+dmt_part_rev_data = {part: dmt_part_data[part] for part in rev_subset}
+
 # export the Epicor-friendly data
 write_data.write_csv(Part.expected_fields,
                      dmt_part_data,
@@ -190,8 +195,10 @@ write_data.write_csv(config.part_plant_header.split(','),
                      dmt_part_data,
                      config.output_path+'part_plant.csv')
 write_data.write_csv(config.part_rev_header.split(','),
-                     dmt_part_data,
+                     dmt_part_rev_data,
                      config.output_path+'part_rev.csv')
+# above, replace `dmt_part_rev_data` with `dmt_part_data` if revision numbers
+# are needed for all parts
 
 write_data.write_csv(Material.expected_fields,
                      [row for key in dmt_bom_data for row in dmt_bom_data[key]],
