@@ -61,6 +61,12 @@ def debug(test_single_pn):
     print(len(missing_parts), 'orphaned parts:')
     print(missing_parts)
 
+    print('---PARTS MISSING EITHER A BOM OR BOO---')
+    bom_keys = set(dmt_bom_data.keys())
+    boo_keys = set(dmt_boo_data.keys())
+    print('parts with a BOM but not BOO:', bom_keys - boo_keys)
+    print('parts with a BOO but not BOM:', boo_keys - bom_keys)
+
 def resolve_bom(data, pn):
     """Recurse over the rows in `data` belonging to part `pn` and
     return a list containing all its dependent materials
