@@ -14,7 +14,7 @@ def output_filename(phase):
     """Return the path and filename for the CSV file corresponding
     to the given DMT `phase`
     """
-    return os.path.normpath(config.output_path + csv_map[phase])
+    return os.path.abspath(config.output_path + csv_map[phase])
 
 def _dmt_cmd(phase):
     """Return a string containing the full DMT command with all arguments

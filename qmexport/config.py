@@ -11,7 +11,7 @@ csv_files = {'part': '20161007_1140_qm_part_query_all.csv',
 def qualified_filename(query):
     """Return the path and filename for the specified reference file
     """
-    return os.path.normpath(csv_path + csv_files[query])
+    return os.path.abspath(csv_path + csv_files[query])
 
 # constants
 company = 'BBN'
