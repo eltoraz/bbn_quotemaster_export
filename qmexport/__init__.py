@@ -2,7 +2,7 @@
 #  to CSV format usable by Epicor ERP's DMT
 import os
 
-from qmexport import config, load_data, write_data
+from qmexport import config, load_data, write_data, dmt
 
 from qmexport.part import Part
 from qmexport.material import Material
@@ -196,22 +196,22 @@ write_data.write_csv(Part.expected_fields,
 
 write_data.write_csv(config.part_header.split(','),
                      dmt_part_data,
-                     config.output_path+'part.csv')
+                     dmt.output_filename('Part'))
 write_data.write_csv(config.part_plant_header.split(','),
                      dmt_part_data,
-                     config.output_path+'part_plant.csv')
+                     dmt.output_filename('Part Plant'))
 write_data.write_csv(config.part_rev_header.split(','),
                      dmt_part_rev_data,
-                     config.output_path+'part_rev.csv')
+                     dmt.output_filename('Part Revision'))
 # above, replace `dmt_part_rev_data` with `dmt_part_data` if revision numbers
 # are needed for all parts
 
 write_data.write_csv(Material.expected_fields,
                      [row for key in dmt_bom_data for row in dmt_bom_data[key]],
-                     config.output_path+'bom.csv')
+                     dmt.output_filename('Bill of Materials'))
 write_data.write_csv(Operation.expected_fields,
                      [row for key in dmt_boo_data for row in dmt_boo_data[key]],
-                     config.output_path+'boo.csv')
+                     dmt.output_filename('Bill of Operations'))
 
 test_single_pn = 'AT11'
 test_complex_pn = 'Y2233L-095-O-FRAME LF'
