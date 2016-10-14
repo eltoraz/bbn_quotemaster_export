@@ -4,6 +4,8 @@ import os
 import re
 import string
 
+from qmexport import config, load_data
+
 def _check_canonical(working_dict, draw_num, new_rev):
     """Return True if the new revision number should be stored in the dict
     (possibly overwriting previous value) based on the following criteria:
@@ -53,14 +55,47 @@ def _get_revs(path):
 
     return working_dict
 
-def run():
-    """Return a dict mapping drawing numbers to revision numbers for all
-    parts with an Inventor document in the design/development path
+def _get_qm_data():
+    """Return a dict mapping drawing numbers to a list of part numbers
+    each corresponds to, using data read in from a Quote Master query
     """
-    rev_nums = {}
+    # read in data
+    proc_data_filename = config.qualified_filename('process plan')
+    proc_data = load_data.import_data('csv', proc_data_filename)
+
+    draw_num_re = '([a-zA-Z]{3}-\d{3})'
+    drawnum_part_map = {}
+    for entry in proc_data:
+        working_dn = entry[config.drawnum]
+        working_pn = entry[config.partnum]
+
+        # discard entries with non-standard process plans
+        # (they won't match any of the items the crawler finds anyway)
+        if not re.match(draw_num_re, working_dn):
+            continue
+
+        if working_dn in drawnum_part_map:
+            drawnum_part_map[working_dn].append(working_pn)
+        else:
+            drawnum_part_map[working_dn] = [working_pn]
+
+    return drawnum_part_map
+
+def run():
+    """Return a dict mapping part numbers to revision numbers for all
+    parts with an Inventor document in the design/development workspace
+    """
+    drawnum_rev_map = {}
     path = 'I:/Cadd/'
 
     for subdir in string.ascii_uppercase:
-        rev_nums.update(_get_revs(os.path.abspath(path + subdir + '/')))
+        drawnum_rev_map.update(_get_revs(os.path.abspath(path + subdir + '/')))
 
-    return rev_nums
+    drawnum_part_map = _get_qm_data()
+
+    partnum_rev_map = {}
+    for dn in drawnumn_rev_map:
+        for pn in drawnum_part_map.get(dn, []):
+            partnum_rev_map[pn] = drawnum_rev_map[dn]
+
+    return partnum_rev_map
