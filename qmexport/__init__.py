@@ -29,9 +29,10 @@ def debug(test_single_pn):
 
     print('---PARTS MISSING REVISION NUMBERS---')
     missing_revs = [pn for pn in dmt_part_data.keys() if _missing_req_rev(pn)]
+    missing_rev_parts = [dmt_part_data[part] for part in missing_revs]
     print(len(missing_revs), 'parts need revision numbers manually specified')
     write_data.write_csv(config.part_rev_header.split(','),
-                         [dmt_part_data[part] for part in missing_revs],
+                         missing_rev_parts,
                          config.output_path+'missing_part_revs.csv')
 
     print('---BOM---')

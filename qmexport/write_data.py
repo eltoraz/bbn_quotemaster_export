@@ -16,7 +16,8 @@ def write_csv(fieldnames, data, filename):
     with open(filename, 'w', encoding='iso8859_15') as csv_file:
         csv_writer = csv.DictWriter(csv_file,
                                     extrasaction='ignore',
-                                    fieldnames=fieldnames)
+                                    fieldnames=fieldnames,
+                                    lineterminator='\n')
         csv_writer.writeheader()
         if isinstance(data, dict):
             csv_writer.writerows([row.__dict__ for row in data.values()])
