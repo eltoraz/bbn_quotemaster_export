@@ -31,8 +31,8 @@ def debug(test_single_pn):
     missing_revs = [pn for pn in dmt_part_data.keys() if _missing_req_rev(pn)]
     print(len(missing_revs), 'parts need revision numbers manually specified')
     write_data.write_csv(['PartNum', 'RevisionNum'],
-                         missing_revs,
-                         config.output_path+'missing_part_revs.csv')
+                          [{'PartNum': pn, 'RevisionNum': missing_revs[pn]} for pn in missing_revs],
+                          config.output_path+'missing_part_revs.csv')
 
     print('---BOM---')
     print(len(bom_data), 'BOM entries read in')
