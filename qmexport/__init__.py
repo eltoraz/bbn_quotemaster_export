@@ -2,7 +2,7 @@
 #  to CSV format usable by Epicor ERP's DMT
 import os
 
-from qmexport import config, load_data, write_data, dmt
+from qmexport import config, load_data, write_data, dmt, crawler
 
 from qmexport.part import Part
 from qmexport.material import Material
@@ -20,6 +20,19 @@ def debug(test_single_pn):
     print('---PART (DMT)---')
     print(len(dmt_part_data), 'processed part entries')
     #print(dmt_part_data[test_single_pn])
+
+    def _missing_req_rev(pn):
+        """Return True if the part specified is missing a revision number
+        and is present in a BOO/BOM (and thus requires one); False otherwise
+        """
+        return (pn in dmt_bom_data or pn in dmt_boo_data) and (not dmt_part_data[pn].RevisionNum)
+
+    print('---PARTS MISSING REVISION NUMBERS---')
+    missing_revs = [pn for pn in dmt_part_data.keys() if _missing_req_rev(pn)]
+    print(len(missing_revs), 'parts need revision numbers manually specified')
+    write_data.write_csv(['PartNum', 'RevisionNum'],
+                         missing_revs,
+                         config.output_path+'missing_part_revs.csv')
 
     print('---BOM---')
     print(len(bom_data), 'BOM entries read in')
@@ -175,11 +188,11 @@ dmt_part_data = map_part.map_part(part_data)
 
 # import part revisions (if they exist) for use in BOM/BOO
 part_rev_filename = config.qualified_filename('part revision')
-rev_dict = {}
-if os.path.isfile(part_rev_filename):
-    rev_data = load_data.import_data('csv', part_rev_filename)
-    rev_dict = map_rev.map_rev(rev_data)
-    map_rev.update_parts(dmt_part_data, rev_dict)
+rev_dict = crawler.run()
+#if os.path.isfile(part_rev_filename):
+#    rev_data = load_data.import_data('csv', part_rev_filename)
+#    rev_dict = map_rev.map_rev(rev_data)
+map_rev.update_parts(dmt_part_data, rev_dict)
 
 dmt_bom_data = map_bom.map_bom(bom_data, rev_dict)
 dmt_boo_data = map_boo.map_boo(boo_data, rev_dict)
