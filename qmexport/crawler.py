@@ -4,6 +4,33 @@ import os
 import re
 import string
 
+def _check_canonical(working_dict, draw_num, new_rev):
+    """Return True if the new revision number should be stored in the dict
+    (possibly overwriting previous value) based on the following criteria:
+    - specified `draw num` has not entry in the `working_dict` yet
+    - both are same type (both numerical or both alph) and new > old, OR
+    - new is numerical and old is strictly alph
+
+    Return False otherwise
+    """
+    if draw_num not in working_dict:
+        return True
+
+    num_regex = '\d{1,2}-\d{1,2}'
+    chr_regex = '[A-Za-z]{1,2}-[A-Za-z]{1,2}'
+
+    old_rev = working_dict[draw_num]
+    joined_revs = '-'.join([old_rev, new_rev])
+
+    if re.match(num_regex, joined_revs) or re.match(chr_regex, joined_revs):
+        if new_rev > old_rev:
+            return True
+    elif re.match('\d{1,2}', new_rev):
+        # if they're not the same format, but the new is numerical, keep it
+        return True
+
+    return False
+
 def _get_revs(path):
     """Return a dict mapping drawing numbers to the associated revision
     number for items in the given directory.
@@ -18,7 +45,11 @@ def _get_revs(path):
         file_match = re.match(file_regex, entry)
         full_filename = os.path.abspath(os.path.join(path, entry))
         if os.path.isfile(full_filename) and file_match:
-            working_dict[file_match.group(1) = file_match.group(2)]
+            draw_num = file_match.group(1)
+            revn_num = file_match.group(2)
+            # need to check whether to overwrite existing rev num
+            if _check_canonical(working_dict, draw_num, revn_num):
+                working_dict[draw_num] = revn_num
 
     return working_dict
 
