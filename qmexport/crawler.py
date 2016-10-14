@@ -94,7 +94,7 @@ def run():
     drawnum_part_map = _get_qm_data()
 
     partnum_rev_map = {}
-    for dn in drawnumn_rev_map:
+    for dn in drawnum_rev_map:
         for pn in drawnum_part_map.get(dn, []):
             partnum_rev_map[pn] = drawnum_rev_map[dn]
 
