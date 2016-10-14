@@ -3,9 +3,9 @@ import os
 
 output_path = 'output/'
 csv_path = 'ref/'
-csv_files = {'part': '20161007_1140_qm_part_query_all.csv',
-             'bill of materials': '20161007_1224_qm_bom_query.csv',
-             'bill of operations': '20161007_1225_qm_boo_query.csv',
+csv_files = {'part': '20161014_1400_qm_part_query.csv',
+             'bill of materials': '20161014_1600_qm_bom_query.csv',
+             'bill of operations': '20161014_1600_qm_boo_query.csv',
              'process plan': '20161014_1358_qm_processplan_query.csv',
              'part revision': 'part_rev_test.csv'}
 
