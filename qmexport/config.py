@@ -3,10 +3,10 @@ import os
 
 output_path = 'output/'
 csv_path = 'ref/'
-csv_files = {'part': '20161014_1400_qm_part_query.csv',
-             'bill of materials': '20161014_1600_qm_bom_query.csv',
-             'bill of operations': '20161014_1600_qm_boo_query.csv',
-             'process plan': '20161014_1358_qm_processplan_query.csv',
+csv_files = {'part': 'qm_part_data.csv',
+             'bill of materials': 'qm_bom_data.csv',
+             'bill of operations': 'qm_boo_data.csv',
+             'process plan': 'qm_processplan_data.csv',
              'part revision': 'part_rev_test.csv'}
 
 def qualified_filename(query):
