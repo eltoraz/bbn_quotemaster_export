@@ -2,18 +2,32 @@
 import os
 import subprocess
 
+from collections import OrderedDict
+
 from qmexport import config
 
-csv_map = {'Part': 'part.csv',
+# need to use an ordered dict, since the order of the DMT phases
+#  is important
+keys = ['Part', 'Part Plant', 'Part Revision',
+        'Bill of Materials', 'Bill of Operations']
+csv_map = OrderedDict.fromkeys(keys)
+tst_map = OrderedDict.fromkeys(keys)
+
+# old dict literals
+csv_fil = {'Part': 'part.csv',
            'Part Plant': 'part_plant.csv',
            'Part Revision': 'part_rev.csv',
            'Bill of Materials': 'bom.csv',
            'Bill of Operations': 'boo.csv'}
-tst_map = {'Part': 'TEST_6part.csv',
+tst_fil = {'Part': 'TEST_6part.csv',
            'Part Plant': 'TEST_7part_plant.csv',
            'Part Revision': 'TEST_8part_rev.csv',
            'Bill of Materials': 'TEST_9bom.csv',
            'Bill of Operations': 'TEST_10boo.csv'}
+
+for key in keys:
+    csv_map[key] = csv_fil[key]
+    tst_map[key] = tst_fil[key]
 
 def output_filename(phase, debug=False):
     """Return the path and filename for the CSV file corresponding
