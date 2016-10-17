@@ -13,7 +13,7 @@ tst_map = {'Part': 'TEST_6part.csv',
            'Part Plant': 'TEST_7part_plant.csv',
            'Part Revision': 'TEST_8part_rev.csv',
            'Bill of Materials': 'TEST_9bom.csv',
-           'Bill of Operatoins': 'TEST_10boo.csv'}
+           'Bill of Operations': 'TEST_10boo.csv'}
 
 def output_filename(phase, debug=False):
     """Return the path and filename for the CSV file corresponding

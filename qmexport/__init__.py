@@ -173,6 +173,9 @@ def dmt_test(test_single_pn, test_complex_pn):
                          test_complex_boo,
                          config.output_path+'TEST_10boo.csv')
 
+    # run the DMT on the example files, with debug=True to limit the test
+    dmt.run_all(True)
+
 # get the data
 # for now, by opening a CSV of the result set of the queries
 part_filename = config.qualified_filename('part')
