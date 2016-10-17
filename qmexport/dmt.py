@@ -4,7 +4,7 @@ import subprocess
 
 from collections import OrderedDict
 
-from qmexport import config
+from qmexport import config, log
 
 # need to use an ordered dict, since the order of the DMT phases
 #  is important
@@ -44,9 +44,11 @@ def output_filename(phase, debug=False, append=''):
 
     return filename + suffix + '.csv'
 
-def _dmt_cmd(phase, debug=False):
+def _dmt_cmd(phase, seg, debug=False):
     """Return a list representing the full DMT command with all arguments
     for the given `phase` in DMT's list, to be used in subprocess.run
+
+    Since the data may be in segments, `seg` represents the current chunk
     """
     # DMT parameters
     dmt_exe = 'C:/Epicor/ERP10.1Client/Client/DMT.exe'
@@ -55,7 +57,7 @@ def _dmt_cmd(phase, debug=False):
     dmt_conn = 'net.tcp://server/environment'
     dmt_cnfg = 'environment'
 
-    source = output_filename(phase, debug)
+    source = output_filename(phase, debug, seg)
 
     return [dmt_exe, '-NoUI',
             '-User={0}'.format(dmt_user),
@@ -66,20 +68,33 @@ def _dmt_cmd(phase, debug=False):
             '-Source="{0}"'.format(source),
             '-Add', '-Update']
 
-def _run_dmt(phase, debug=False):
+def _run_dmt(phase, seg_count, debug=False):
     """Execute the DMT for the given DMT `phase`
     """
     # set timeout to a sane value given the input size
     #timeout = 30
 
-    result = subprocess.run(_dmt_cmd(phase, debug))
-    return result.returncode
+    return_code = 0
+    for i in range(seg_count):
+        log.log('Running DMT on phase ' + phase + ', segment ' + str(i+1) +
+                ' of ' + seg_count + ' (debug={0})'.format(debug))
+        result = subprocess.run(_dmt_cmd(phase, i+1, debug))
+        if result.returncode:
+            return_code = 1
+            log.log('DMT error in phase ' + phase + ', segment ' + str(i+1))
 
-def run_all(debug=False):
+    return return_code
+
+def run_all(seg_count, debug=False):
     """Run DMT on all phases related to Quote Master data
     """
+    # part/plant/rev all should have the same # of segments since they're
+    # built from the same data
+    seg_count_map = {'Part': 'part',
+                     'Part Plant': 'part',
+                     'Part Revision': 'part',
+                     'Bill of Materials': 'bom',
+                     'Bill of Operations': 'boo'}
+
     for phase in csv_map:
-        print('Running DMT on phase', phase, '(debug={0})'.format(debug))
-        return_code = _run_dmt(phase, debug)
-        if return_code:
-            print('DMT error in phase', phase)
+        return_code = _run_dmt(phase, seg_count[seg_count_map[phase]], debug)

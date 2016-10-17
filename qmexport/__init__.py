@@ -182,7 +182,8 @@ def dmt_test(test_single_pn, test_complex_pn):
 
     # run the DMT on the example files, with debug=True to limit the test
     log.log('Calling DMT on test data...')
-    dmt.run_all(True)
+    test_seg = {'part': 1, 'bom': 1, 'boo': 1}
+    dmt.run_all(test_seg, True)
 
 # get the data
 # for now, by opening a CSV of the result set of the queries
@@ -219,42 +220,44 @@ dmt_part_rev_data = {part: dmt_part_data[part] for part in rev_subset}
 
 # split data into groups of 1000 records
 split = 1000
-part_parts = math.ceil(len(dmt_part_data)/split)
-bom_parts = math.ceil(len(dmt_bom_data)/split)
-boo_parts = math.ceil(len(dmt_boo_data)/split)
+seg_count = {'part': math.ceil(len(dmt_part_data)/split),
+             'bom': math.ceil(len(bom_data)/split),
+             'boo': math.ceil(len(boo_data)/split)}
 
 # export the Epicor-friendly data
-log.log('Writing converted data to CSVs in', config.output_path)
+log.log('Writing converted data to CSVs in ' + config.output_path)
 write_data.write_csv(Part.expected_fields,
                      dmt_part_data,
                      config.output_path+'part_ALL.csv')
 
 # above, replace `dmt_part_rev_data` with `dmt_part_data` if revision numbers
 # are needed for all parts
-for i in range(part_parts):
+part_rows = [dmt_part_data[key] for key in dmt_part_data]
+for i in range(seg_count['part']):
     offset = i * split
     write_data.write_csv(config.part_header.split(','),
-                         dmt_part_data[offset:offset+split],
-                         dmt.output_filename('Part', suffix=str(i+1)))
+                         part_rows[offset:offset+split],
+                         dmt.output_filename('Part', append=str(i+1)))
     write_data.write_csv(config.part_plant_header.split(','),
-                         dmt_part_data[offset:offset+split],
-                         dmt.output_filename('Part Plant', suffix=str(i+1)))
+                         part_rows[offset:offset+split],
+                         dmt.output_filename('Part Plant', append=str(i+1)))
     write_data.write_csv(config.part_rev_header.split(','),
-                         dmt_part_rev_data[offset:offset+split],
-                         dmt.output_filename('Part Revision', suffix=str(i+1)))
+                         part_rows[offset:offset+split],
+                         dmt.output_filename('Part Revision', append=str(i+1)))
 
 bom_rows = [row for key in dmt_bom_data for row in dmt_bom_data[key]]
-for i in range(bom_parts):
+for i in range(seg_count['bom']):
     offset = i * split
     write_data.write_csv(Material.expected_fields,
                          bom_rows[offset:offset+split],
-                         dmt.output_filename('Bill of Materials', suffix=str(i+1)))
+                         dmt.output_filename('Bill of Materials', append=str(i+1)))
 
-boo_rows = [row for key in dmt_boo_data for row in dmt_boo_data[key]],
-for i in range(boo_parts):
+boo_rows = [row for key in dmt_boo_data for row in dmt_boo_data[key]]
+for i in range(seg_count['boo']):
+    offset = i * split
     write_data.write_csv(Operation.expected_fields,
                          boo_rows[offset:offset+split],
-                         dmt.output_filename('Bill of Operations', suffix=str(i+1)))
+                         dmt.output_filename('Bill of Operations', append=str(i+1)))
 
 test_single_pn = 'AT11'
 test_complex_pn = 'Y2233L-095-O-FRAME LF'
