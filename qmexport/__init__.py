@@ -155,6 +155,11 @@ def dmt_test(test_single_pn, test_complex_pn):
     test_complex_boo = resolve_boo(dmt_boo_data, test_complex_bom)
     test_complex_part_list = resolve_part_list(dmt_part_data, test_complex_bom)
 
+    # use dummy values for classids that haven't been mapped yet
+    for part in test_complex_part_list:
+        if test_complex_part_list[part].ClassID[0] == '!':
+            test_complex_part_list[part].ClassID = 'OTHR'
+
     write_data.write_csv(Part.expected_fields,
                          test_complex_part_list,
                          config.output_path+'TEST_Bpart_ALL.csv')
