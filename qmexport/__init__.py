@@ -125,6 +125,7 @@ def dmt_test(test_single_pn, test_complex_pn):
     """Generate short CSV files to test program output with DMT
     """
     # single-layer part w/ associated BOM & BOO
+    print('Running small-scale data set & DMT tests...')
     test_single_bom = resolve_bom(dmt_bom_data, test_single_pn)
     test_single_boo = resolve_boo(dmt_boo_data, test_single_bom)
 
@@ -174,6 +175,7 @@ def dmt_test(test_single_pn, test_complex_pn):
                          config.output_path+'TEST_10boo.csv')
 
     # run the DMT on the example files, with debug=True to limit the test
+    print('Calling DMT on test data...')
     dmt.run_all(True)
 
 # get the data
@@ -182,6 +184,7 @@ part_filename = config.qualified_filename('part')
 bom_filename = config.qualified_filename('bill of materials')
 boo_filename = config.qualified_filename('bill of operations')
 
+print('Reading in Quote Master data...')
 part_data = load_data.import_data('csv', part_filename)
 bom_data = load_data.import_data('csv', bom_filename)
 boo_data = load_data.import_data('csv', boo_filename)
@@ -191,6 +194,7 @@ boo_data = load_data.import_data('csv', boo_filename)
 dmt_part_data = map_part.map_part(part_data)
 
 # import part revisions (if they exist) for use in BOM/BOO
+print('Crawling design/development folder for part revision numbers...')
 part_rev_filename = config.qualified_filename('part revision')
 rev_dict = crawler.run()
 #if os.path.isfile(part_rev_filename):
@@ -198,6 +202,7 @@ rev_dict = crawler.run()
 #    rev_dict = map_rev.map_rev(rev_data)
 map_rev.update_parts(dmt_part_data, rev_dict)
 
+print('Converting data to Epicor format...')
 dmt_bom_data = map_bom.map_bom(bom_data, rev_dict)
 dmt_boo_data = map_boo.map_boo(boo_data, rev_dict)
 
@@ -207,6 +212,7 @@ rev_subset.extend([i for i in dmt_boo_data.keys() if i not in rev_subset])
 dmt_part_rev_data = {part: dmt_part_data[part] for part in rev_subset}
 
 # export the Epicor-friendly data
+print('Writing converted data to CSVs in', config.output_path)
 write_data.write_csv(Part.expected_fields,
                      dmt_part_data,
                      config.output_path+'part_ALL.csv')

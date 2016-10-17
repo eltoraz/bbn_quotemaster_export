@@ -73,6 +73,7 @@ def run_all(debug=False):
     """Run DMT on all phases related to Quote Master data
     """
     for phase in csv_map:
+        print('Running DMT on phase', phase, '(debug={0})'.format(debug))
         return_code = _run_dmt(phase, debug)
         if return_code:
             print('DMT error in phase', phase)
