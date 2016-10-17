@@ -14,29 +14,35 @@ csv_map = OrderedDict.fromkeys(keys)
 tst_map = OrderedDict.fromkeys(keys)
 
 # old dict literals
-csv_fil = {'Part': 'part.csv',
-           'Part Plant': 'part_plant.csv',
-           'Part Revision': 'part_rev.csv',
-           'Bill of Materials': 'bom.csv',
-           'Bill of Operations': 'boo.csv'}
-tst_fil = {'Part': 'TEST_6part.csv',
-           'Part Plant': 'TEST_7part_plant.csv',
-           'Part Revision': 'TEST_8part_rev.csv',
-           'Bill of Materials': 'TEST_9bom.csv',
-           'Bill of Operations': 'TEST_10boo.csv'}
+csv_fil = {'Part': 'part',
+           'Part Plant': 'part_plant',
+           'Part Revision': 'part_rev',
+           'Bill of Materials': 'bom',
+           'Bill of Operations': 'boo'}
+tst_fil = {'Part': 'TEST_6part',
+           'Part Plant': 'TEST_7part_plant',
+           'Part Revision': 'TEST_8part_rev',
+           'Bill of Materials': 'TEST_9bom',
+           'Bill of Operations': 'TEST_10boo'}
 
 for key in keys:
     csv_map[key] = csv_fil[key]
     tst_map[key] = tst_fil[key]
 
-def output_filename(phase, debug=False):
+def output_filename(phase, debug=False, append=''):
     """Return the path and filename for the CSV file corresponding
     to the given DMT `phase`
     """
+    suffix = ''
+    if append:
+        suffix = '_' + append
+
     if debug:
-        return os.path.abspath(config.output_path + tst_map[phase])
+        filename = os.path.abspath(config.output_path + tst_map[phase])
     else:
-        return os.path.abspath(config.output_path + csv_map[phase])
+        filename = os.path.abspath(config.output_path + csv_map[phase])
+
+    return filename + suffix + '.csv'
 
 def _dmt_cmd(phase, debug=False):
     """Return a list representing the full DMT command with all arguments
