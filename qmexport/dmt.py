@@ -35,7 +35,7 @@ def output_filename(phase, debug=False, append=''):
     """
     suffix = ''
     if append:
-        suffix = '_' + append
+        suffix = '_{0}'.format(append)
 
     if debug:
         filename = os.path.abspath(config.output_path + tst_map[phase])
@@ -77,7 +77,7 @@ def _run_dmt(phase, seg_count, debug=False):
     return_code = 0
     for i in range(seg_count):
         log.log('Running DMT on phase ' + phase + ', segment ' + str(i+1) +
-                ' of ' + seg_count + ' (debug={0})'.format(debug))
+                ' of ' + str(seg_count) + ' (debug={0})'.format(debug))
         result = subprocess.run(_dmt_cmd(phase, i+1, debug))
         if result.returncode:
             return_code = 1

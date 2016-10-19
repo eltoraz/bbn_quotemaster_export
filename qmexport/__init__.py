@@ -166,19 +166,19 @@ def dmt_test(test_single_pn, test_complex_pn):
                          config.output_path+'TEST_Bpart_ALL.csv')
     write_data.write_csv(config.part_header.split(','),
                          test_complex_part_list,
-                         config.output_path+'TEST_6part.csv')
+                         dmt.output_filename('Part', True, 1))
     write_data.write_csv(config.part_plant_header.split(','),
                          test_complex_part_list,
-                         config.output_path+'TEST_7part_plant.csv')
+                         dmt.output_filename('Part Plant', True, 1))
     write_data.write_csv(config.part_rev_header.split(','),
                          test_complex_part_list,
-                         config.output_path+'TEST_8part_rev.csv')
+                         dmt.output_filename('Part Revision', True, 1))
     write_data.write_csv(Material.expected_fields,
                          test_complex_bom,
-                         config.output_path+'TEST_9bom.csv')
+                         dmt.output_filename('Bill of Materials', True, 1))
     write_data.write_csv(Operation.expected_fields,
                          test_complex_boo,
-                         config.output_path+'TEST_10boo.csv')
+                         dmt.output_filename('Bill of Operations', True, 1))
 
     # run the DMT on the example files, with debug=True to limit the test
     log.log('Calling DMT on test data...')
