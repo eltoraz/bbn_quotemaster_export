@@ -76,12 +76,14 @@ def _run_dmt(phase, seg_count, debug=False):
 
     return_code = 0
     for i in range(seg_count):
-        log.log('Running DMT on phase ' + phase + ', segment ' + str(i+1) +
-                ' of ' + str(seg_count) + ' (debug={0})'.format(debug))
+        log.log('Running DMT on phase ' + phase + ', segment ' +
+                '{0}'.format(i+1) + ' of ' + '{0}'.format(seg_count) +
+                ' (debug={0})'.format(debug))
         result = subprocess.run(_dmt_cmd(phase, i+1, debug))
         if result.returncode:
             return_code = 1
-            log.log('DMT error in phase ' + phase + ', segment ' + str(i+1))
+            log.log('DMT error in phase ' + phase + ', segment ' +
+                    '{0}'.format(i+1))
 
     return return_code
 

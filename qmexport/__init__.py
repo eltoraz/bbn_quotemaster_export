@@ -235,29 +235,32 @@ write_data.write_csv(Part.expected_fields,
 part_rows = [dmt_part_data[key] for key in dmt_part_data]
 for i in range(seg_count['part']):
     offset = i * split
+    app_str = '{0}'.format(i+1)
     write_data.write_csv(config.part_header.split(','),
                          part_rows[offset:offset+split],
-                         dmt.output_filename('Part', append=str(i+1)))
+                         dmt.output_filename('Part', append=app_str))
     write_data.write_csv(config.part_plant_header.split(','),
                          part_rows[offset:offset+split],
-                         dmt.output_filename('Part Plant', append=str(i+1)))
+                         dmt.output_filename('Part Plant', append=app_str))
     write_data.write_csv(config.part_rev_header.split(','),
                          part_rows[offset:offset+split],
-                         dmt.output_filename('Part Revision', append=str(i+1)))
+                         dmt.output_filename('Part Revision', append=app_str))
 
 bom_rows = [row for key in dmt_bom_data for row in dmt_bom_data[key]]
 for i in range(seg_count['bom']):
     offset = i * split
+    app_str = '{0}'.format(i+1)
     write_data.write_csv(Material.expected_fields,
                          bom_rows[offset:offset+split],
-                         dmt.output_filename('Bill of Materials', append=str(i+1)))
+                         dmt.output_filename('Bill of Materials', append=app_str))
 
 boo_rows = [row for key in dmt_boo_data for row in dmt_boo_data[key]]
 for i in range(seg_count['boo']):
     offset = i * split
+    app_str = '{0}'.format(i+1)
     write_data.write_csv(Operation.expected_fields,
                          boo_rows[offset:offset+split],
-                         dmt.output_filename('Bill of Operations', append=str(i+1)))
+                         dmt.output_filename('Bill of Operations', append=app_str))
 
 test_single_pn = 'AT11'
 test_complex_pn = 'Y2233L-095-O-FRAME LF'
