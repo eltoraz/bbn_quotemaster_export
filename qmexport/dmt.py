@@ -44,11 +44,14 @@ def output_filename(phase, debug=False, append=''):
 
     return filename + suffix + '.csv'
 
-def _dmt_cmd(phase, seg, debug=False):
+def _dmt_cmd(phase, seg, ops, debug=False):
     """Return a list representing the full DMT command with all arguments
     for the given `phase` in DMT's list, to be used in subprocess.run
 
     Since the data may be in segments, `seg` represents the current chunk
+
+    `ops` should be specified as a list of arguments to choose DMT's
+    behavior (e.g., specify ['-Delete'] to remove records from the DB)
     """
     # DMT parameters
     dmt_exe = 'C:/Epicor/ERP10.1Client/Client/DMT.exe'
@@ -65,25 +68,32 @@ def _dmt_cmd(phase, seg, debug=False):
             '-ConnectionURL="{0}"'.format(dmt_conn),
             '-ConfigValue="{0}"'.format(dmt_cnfg),
             '-Import="{0}"'.format(phase),
-            '-Source="{0}"'.format(source),
-            '-Add', '-Update']
+            '-Source="{0}"'.format(source)] + ops
 
-def _run_dmt(phase, seg_count, debug=False):
+def _run_dmt(phase, seg_count, delete=False, debug=False):
     """Execute the DMT for the given DMT `phase`
+
+    If `delete` is set to True, call the DMT to remove the records in
+    the target CSV from Epicor's DB
     """
     # set timeout to a sane value given the input size
-    #timeout = 30
+    timeout = 420
 
+    # operation arguments to pass to DMT
+    ops = ['-Add', '-Update']
+    if delete:
+        ops = ['-Delete']
+
+    # run DMT on each CSV containing a subset of data for the given phase
     return_code = 0
     for i in range(seg_count):
-        log.log('Running DMT on phase ' + phase + ', segment ' +
-                '{0}'.format(i+1) + ' of ' + '{0}'.format(seg_count) +
-                ' (debug={0})'.format(debug))
-        result = subprocess.run(_dmt_cmd(phase, i+1, debug))
+        result = subprocess.run(_dmt_cmd(phase, i+1, ops, debug), timeout=timeout)
         if result.returncode:
             return_code = 1
-            log.log('DMT error in phase ' + phase + ', segment ' +
-                    '{0}'.format(i+1))
+            log.log('DMT error in phase {0}, segment {1}'.format(phase, i+1))
+        else:
+            log.log(('DMT successfully completed {0}, segment {1} of '
+                     '{2} (debug={3})').format(phase, i+1, seg_count, debug))
 
     return return_code
 
@@ -99,4 +109,4 @@ def run_all(seg_count, debug=False):
                      'Bill of Operations': 'boo'}
 
     for phase in csv_map:
-        return_code = _run_dmt(phase, seg_count[seg_count_map[phase]], debug)
+        return_code = _run_dmt(phase, seg_count[seg_count_map[phase]], debug=debug)
