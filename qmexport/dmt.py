@@ -3,6 +3,7 @@ import os
 import subprocess
 
 from collections import OrderedDict
+from copy import copy
 
 from qmexport import config, log
 
@@ -108,6 +109,11 @@ def run_all(seg_count, debug=False, delete=False):
                      'Bill of Materials': 'bom',
                      'Bill of Operations': 'boo'}
 
-    for phase in csv_map:
+    # need to reverse order of operations if deleting records
+    key_order = copy(keys)
+    if delete:
+        key_order.reverse()
+
+    for phase in key_order:
         return_code = _run_dmt(phase, seg_count[seg_count_map[phase]],
                                delete=delete, debug=debug)
