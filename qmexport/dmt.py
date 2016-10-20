@@ -97,7 +97,7 @@ def _run_dmt(phase, seg_count, delete=False, debug=False):
 
     return return_code
 
-def run_all(seg_count, debug=False):
+def run_all(seg_count, debug=False, delete=False):
     """Run DMT on all phases related to Quote Master data
     """
     # part/plant/rev all should have the same # of segments since they're
@@ -109,4 +109,5 @@ def run_all(seg_count, debug=False):
                      'Bill of Operations': 'boo'}
 
     for phase in csv_map:
-        return_code = _run_dmt(phase, seg_count[seg_count_map[phase]], debug=debug)
+        return_code = _run_dmt(phase, seg_count[seg_count_map[phase]],
+                               delete=delete, debug=debug)

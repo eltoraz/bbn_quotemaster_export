@@ -118,7 +118,7 @@ def resolve_part_list(data, bom):
 
     return working_part_list
 
-def dmt_test(test_single_pn, test_complex_pn):
+def dmt_test(test_single_pn, test_complex_pn, delete=False):
     """Generate short CSV files to test program output with DMT
     """
     # single-layer part w/ associated BOM & BOO
@@ -179,7 +179,7 @@ def dmt_test(test_single_pn, test_complex_pn):
     # run the DMT on the example files, with debug=True to limit the test
     log.log('Calling DMT on test data...')
     test_seg = {'part': 1, 'bom': 1, 'boo': 1}
-    dmt.run_all(test_seg, True)
+    dmt.run_all(test_seg, True, delete)
 
 # get the data
 # for now, by opening a CSV of the result set of the queries
