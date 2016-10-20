@@ -9,6 +9,9 @@ csv_files = {'part': 'qm_part_data.csv',
              'process plan': 'qm_processplan_data.csv',
              'part revision': 'part_rev_test.csv'}
 
+# max number of records per CSV file
+split = 1000
+
 def qualified_filename(query):
     """Return the path and filename for the specified reference file
     """

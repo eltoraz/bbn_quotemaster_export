@@ -77,8 +77,12 @@ def _run_dmt(phase, seg_count, delete=False, debug=False):
     If `delete` is set to True, call the DMT to remove the records in
     the target CSV from Epicor's DB
     """
-    # set timeout to a sane value given the input size
-    timeout = 420
+    peak_rpm = 300          # estimated DMT peak records per minute
+    leeway = 1.4
+
+    # timeout based on the max # of records per file and DMT's
+    #  throughput rate, with a little extra leeway
+    timeout = config.split / (peak_rpm / 60) * leeway
 
     # operation arguments to pass to DMT
     ops = ['-Add', '-Update']
@@ -88,13 +92,20 @@ def _run_dmt(phase, seg_count, delete=False, debug=False):
     # run DMT on each CSV containing a subset of data for the given phase
     return_code = 0
     for i in range(seg_count):
-        result = subprocess.run(_dmt_cmd(phase, i+1, ops, debug), timeout=timeout)
-        if result.returncode:
-            return_code = 1
-            log.log('DMT error in phase {0}, segment {1}'.format(phase, i+1))
+        try:
+            result = subprocess.run(_dmt_cmd(phase, i+1, ops, debug), timeout=timeout)
+        except TimeoutExpired as err:
+            return_code = -1
+            log.log('DMT timed out ({0} sec) in phase {1}, segment {2}'.format(
+                    err.timeout, phase, i+1))
         else:
+            return_code = result.returncode
+
+        if return_code == 0:
             log.log(('DMT successfully completed {0}, segment {1} of '
                      '{2} (debug={3})').format(phase, i+1, seg_count, debug))
+        elif return_code == 1:
+            log.log('DMT error in phase {0}, segment {1}'.format(phase, i+1))
 
     return return_code
 

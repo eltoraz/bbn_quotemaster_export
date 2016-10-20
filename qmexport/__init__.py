@@ -215,7 +215,7 @@ rev_subset.extend([i for i in dmt_boo_data.keys() if i not in rev_subset])
 dmt_part_rev_data = {part: dmt_part_data[part] for part in rev_subset}
 
 # split data into groups of 1000 records
-split = 1000
+split = config.split
 seg_count = {'part': math.ceil(len(dmt_part_data)/split),
              'bom': math.ceil(len(bom_data)/split),
              'boo': math.ceil(len(boo_data)/split)}
