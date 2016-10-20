@@ -11,59 +11,55 @@ from qmexport.operation import Operation
 
 from qmexport.map_data import map_part, map_bom, map_boo, map_rev
 
+def _missing_req_rev(pn):
+    """Return True if the part specified is missing a revision number
+    and is present in a BOO/BOM (and thus requires one); False otherwise
+    """
+    return (pn in dmt_bom_data or pn in dmt_boo_data) and (not dmt_part_data[pn].RevisionNum)
+
 def debug(test_single_pn):
     """Print info about the data structures for debugging
     """
-    print('---PART---')
-    print(len(part_data), 'raw part entries')
-    #print(part_data[0])
+    log.log('---PART---')
+    log.log('{0} raw part entries'.format(len(part_data)))
 
-    print('---PART (DMT)---')
-    print(len(dmt_part_data), 'processed part entries')
-    #print(dmt_part_data[test_single_pn])
+    log.log('---PART (DMT)---')
+    log.log('{0} processed part entries'.format(len(dmt_part_data)))
 
-    def _missing_req_rev(pn):
-        """Return True if the part specified is missing a revision number
-        and is present in a BOO/BOM (and thus requires one); False otherwise
-        """
-        return (pn in dmt_bom_data or pn in dmt_boo_data) and (not dmt_part_data[pn].RevisionNum)
-
-    print('---PARTS MISSING REVISION NUMBERS---')
+    log.log('---PARTS MISSING REVISION NUMBERS---')
     missing_revs = [pn for pn in dmt_part_data.keys() if _missing_req_rev(pn)]
     missing_rev_parts = [dmt_part_data[part] for part in missing_revs]
-    print(len(missing_revs), 'parts need revision numbers manually specified')
+    log.log('{0} parts need revision numbers manually specified'.format(len(missing_revs)))
     write_data.write_csv(config.part_rev_header.split(','),
                          missing_rev_parts,
                          config.output_path+'missing_part_revs.csv')
 
-    print('---BOM---')
-    print(len(bom_data), 'BOM entries read in')
-    print(len(dmt_bom_data), 'unique parts with BOM entries')
-    #print(dmt_bom_data[test_single_pn])
+    log.log('---BOM---')
+    log.log('{0} BOM entries read in'.format(len(bom_data)))
+    log.log('{0} unique parts with BOM entries'.format(len(dmt_bom_data)))
 
-    print('---BOO---')
-    print(len(boo_data), 'BOO entries read in')
-    print(len(dmt_boo_data), 'unique parts with BOO entries')
-    #print(dmt_boo_data[test_single_pn])
+    log.log('---BOO---')
+    log.log('{0} BOO entries read in'.format(len(boo_data)))
+    log.log('{0} unique parts with BOO entries'.format(len(dmt_boo_data)))
 
-    print('---UNMAPPED CLASSKEYS---')
+    log.log('---UNMAPPED CLASSKEYS---')
     unmapped_classkeys = set()
     for row in dmt_part_data:
         classid = dmt_part_data[row].__dict__['ClassID']
         if classid[0] == '!':
             unmapped_classkeys = set.union(unmapped_classkeys, {classid[1:-1]})
-    print(len(unmapped_classkeys), 'classkeys not mapped to Epicor values:')
-    print(unmapped_classkeys)
+    log.log('{0} classkeys not mapped to Epicor values:'.format(len(unmapped_classkeys)))
+    log.log(unmapped_classkeys)
 
-    print('---UNMAPPED OPERATIONS---')
+    log.log('---UNMAPPED OPERATIONS---')
     missing_ops = set()
     for row in boo_data:
         if row[config.op_code] not in config.operation_mapping:
             missing_ops = set.union(missing_ops, {row[config.op_code]})
-    print(len(missing_ops), 'operations not mapped to Epicor values:')
-    print(missing_ops)
+    log.log('{0} operations not mapped to Epicor values:'.format(len(missing_ops)))
+    log.log(missing_ops)
 
-    print('---MISSING PARTS REFERENCED IN BOM---')
+    log.log('---MISSING PARTS REFERENCED IN BOM---')
     missing_parts = set()
     for row in dmt_bom_data:
         for mat in dmt_bom_data[row]:
@@ -73,14 +69,14 @@ def debug(test_single_pn):
                 missing_parts = set.union(missing_parts, {pn})
             if mn not in dmt_part_data:
                 missing_parts = set.union(missing_parts, {mn})
-    print(len(missing_parts), 'orphaned parts:')
-    print(missing_parts)
+    log.log('{0} orphaned parts:'.format(len(missing_parts)))
+    log.log(missing_parts)
 
-    print('---PARTS MISSING EITHER A BOM OR BOO---')
+    log.log('---PARTS MISSING EITHER A BOM OR BOO---')
     bom_keys = set(dmt_bom_data.keys())
     boo_keys = set(dmt_boo_data.keys())
-    print('parts with a BOM but not BOO:', bom_keys - boo_keys)
-    print('parts with a BOO but not BOM:', boo_keys - bom_keys)
+    log.log('parts with a BOM but not BOO: {0}'.format(bom_keys - boo_keys))
+    log.log('parts with a BOO but not BOM: {0}'.format(boo_keys - bom_keys))
 
 def resolve_bom(data, pn):
     """Recurse over the rows in `data` belonging to part `pn` and
@@ -225,7 +221,7 @@ seg_count = {'part': math.ceil(len(dmt_part_data)/split),
              'boo': math.ceil(len(boo_data)/split)}
 
 # export the Epicor-friendly data
-log.log('Writing converted data to CSVs in ' + config.output_path)
+log.log('Writing converted data to CSVs in {0}'.format(config.output_path))
 write_data.write_csv(Part.expected_fields,
                      dmt_part_data,
                      config.output_path+'part_ALL.csv')
