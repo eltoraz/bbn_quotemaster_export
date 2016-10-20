@@ -261,8 +261,3 @@ for i in range(seg_count['boo']):
     write_data.write_csv(Operation.expected_fields,
                          boo_rows[offset:offset+split],
                          dmt.output_filename('Bill of Operations', append=app_str))
-
-test_single_pn = 'AT11'
-test_complex_pn = 'Y2233L-095-O-FRAME LF'
-#debug(test_single_pn)
-dmt_test(test_single_pn, test_complex_pn)
