@@ -13,7 +13,7 @@ def combined_description(desc1, desc2):
     """
     description = desc1
     if desc2:
-        description = description + '_' + desc2
+        description = '{0}_{1}'.format(desc1, desc2)
 
     return description
 
@@ -30,7 +30,7 @@ def _map_part_base(entry):
 
     classkey = entry[config.classkey]
     if classkey != 'PARTS':
-        class_id = config.class_mapping.get(classkey, '!' + classkey + '!')
+        class_id = config.class_mapping.get(classkey, '!{0}!'.format(classkey))
     else:
         class_id = config.class_mapping_parts[entry[config.asbl_flag]]
 

@@ -77,7 +77,7 @@ def _run_dmt(phase, seg_count, delete=False, debug=False):
     If `delete` is set to True, call the DMT to remove the records in
     the target CSV from Epicor's DB
     """
-    peak_rpm = 300          # estimated DMT peak records per minute
+    peak_rpm = 200          # estimated DMT peak records per minute
     leeway = 1.4
 
     # timeout based on the max # of records per file and DMT's

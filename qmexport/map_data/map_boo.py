@@ -13,7 +13,7 @@ def _map_operation(entry, rev_dict):
     """
     dmt_entry = {}
 
-    # default op when not in the mapping is 'Assembly Step 1'
+    # TODO: default op when not in the mapping is 'Assembly Step 1'
     fallback_op = '110-1'
 
     # TODO: OpDesc caps at 30char
