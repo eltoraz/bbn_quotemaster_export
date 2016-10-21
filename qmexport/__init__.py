@@ -45,7 +45,7 @@ def debug(test_single_pn):
     log.log('---UNMAPPED CLASSKEYS---')
     unmapped_classkeys = set()
     for row in dmt_part_data:
-        classid = dmt_part_data[row].__dict__['ClassID']
+        classid = dmt_part_data[row].ClassID
         if classid[0] == '!':
             unmapped_classkeys = set.union(unmapped_classkeys, {classid[1:-1]})
     log.log('{0} classkeys not mapped to Epicor values:'.format(len(unmapped_classkeys)))
@@ -63,8 +63,8 @@ def debug(test_single_pn):
     missing_parts = set()
     for row in dmt_bom_data:
         for mat in dmt_bom_data[row]:
-            pn = mat.__dict__['PartNum']
-            mn = mat.__dict__['MtlPartNum']
+            pn = mat.PartNum
+            mn = mat.MtlPartNum
             if pn not in dmt_part_data:
                 missing_parts = set.union(missing_parts, {pn})
             if mn not in dmt_part_data:
@@ -82,12 +82,11 @@ def resolve_bom(data, pn):
     """Recurse over the rows in `data` belonging to part `pn` and
     return a list containing all its dependent materials
     """
-    header = 'MtlPartNum'
     if pn in data:
         master_list = data[pn]
         working_list = []
         for row in master_list:
-            working_list += resolve_bom(data, row.__dict__[header])
+            working_list += resolve_bom(data, row.MtlPartNum)
         return master_list + working_list
     else:
         return []
@@ -98,7 +97,7 @@ def resolve_boo(data, bom):
     """
     working_list = []
     for row in bom:
-        pn = row.__dict__['PartNum']
+        pn = row.PartNum
         if pn in data:
             working_list += data[pn]
 
@@ -111,8 +110,8 @@ def resolve_part_list(data, bom):
     """
     working_part_list = {}
     for mat in bom:
-        pn = mat.__dict__['PartNum']
-        mn = mat.__dict__['MtlPartNum']
+        pn = mat.PartNum
+        mn = mat.MtlPartNum
         working_part_list[pn] = data[pn]
         working_part_list[mn] = data[mn]
 
