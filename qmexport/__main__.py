@@ -1,33 +1,26 @@
 import argparse
 
 import qmexport
+import qmexport.dmt
 
 test_single_pn = 'AT11'
 test_complex_pn = 'Y2233L-095-O-FRAME LF'
 
-def _test_add():
-    """Run DMT Add & Update on test data
+def _test(delete):
+    """Run DMT on test data, passing the `delete` parameter through to
+    determine whether to run Add/Update or Delete operations
     """
-    qmexport.dmt_test(test_single_pn, test_complex_pn)
+    qmexport.dmt_test(test_single_pn, test_complex_pn, delete)
 
-def _test_del():
-    """Run DMT Delete on test data (usually to clear it from the DB
-    to test changes to Add)
+def _full(delete):
+    """Run DMT on live data, passing the `delete` parameter through to
+    determine whether to run Add/Update or Delete operations
     """
-    qmexport.dmt_test(test_single_pn, test_complex_pn, True)
+    qmexport.dmt.run_all(qmexport.seg_count, delete=delete)
 
-def _full_add():
-    """Run DMT Add & Update on live data
-    """
-    pass
+parser = argparse.ArgumentParser(
+        description='Export data from Quote Master into Epicor.')
 
-def _full_del():
-    """Run DMT Delete on live data
-    """
-    pass
-
-parser = argparse.ArgumentParser(description=('Export data from Quote '
-                                              'Master into Epicor.'))
 parser.add_argument('--debug', action='store_true',
                     help='print debug info on data collected')
 parser.add_argument('--test', action='store_true',
@@ -42,12 +35,6 @@ if args.debug:
 
 # run the operation determined by the arguments given
 if args.test:
-    if args.delete:
-        _test_del()
-    else:
-        _test_add()
+    _test(delete)
 else:
-    if args.delete:
-        _full_del()
-    else:
-        _full_add()
+    _full(delete)
