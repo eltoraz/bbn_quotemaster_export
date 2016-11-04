@@ -51,8 +51,11 @@ def _map_part_base(entry):
     dmt_entry['IUM'] = uom
     dmt_entry['PUM'] = uom
     dmt_entry['TypeCode'] = part_type
+    dmt_entry['NonStock'] = True
     dmt_entry['PricePerCode'] = config.price_per_code
     dmt_entry['ProdCode'] = prod_code
+    dmt_entry['CostMethod'] = config.cost_method[part_type]
+    dmt_entry['TrackLots'] = True if part_type == 'P' else False
     dmt_entry['SalesUM'] = uom
     dmt_entry['UsePartRev'] = (part_type == 'M')
     dmt_entry['ImageFileName'] = entry[config.image_path]
@@ -77,7 +80,6 @@ def _map_part_plnt(entry):
     dmt_entry['Plant'] = config.plant
     dmt_entry['PrimWhse'] = config.prim_whse
     dmt_entry['SourceType'] = part_type
-    dmt_entry['CostMethod'] = config.cost_method
 
     return dmt_entry
 

@@ -27,7 +27,7 @@ plant = 'MfgSys'
 process_mode = 'S'
 
 prim_whse = 453
-cost_method = 'F'
+cost_method = {'M': 'S', 'P': 'L'}
 
 eco_group_id = 'DMT'
 
@@ -64,12 +64,13 @@ op_desc = 'Process - DESC'          # QM BOO
 
 # CSV headers
 part_header = (
-        'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,'
-        'TypeCode,PricePerCode,ProdCode,SalesUM,UsePartRev,ImageFileName,'
-        'SNFormat,SNBaseDataType,SNMask,SNMaskExample,UOMClassID,NetWeightUOM')
+        'Company,PartNum,SearchWord,PartDescription,ClassID,IUM,PUM,TypeCode,'
+        'NonStock,PricePerCode,ProdCode,CostMethod,TrackLots,SalesUM,'
+        'UsePartRev,ImageFileName,SNFormat,SNBaseDataType,SNMask,SNMaskExample,'
+        'UOMClassID,NetWeightUOM')
 part_plant_header = (
-        'Company,Plant,PartNum,PrimWhse,SourceType,CostMethod,SNMask,'
-        'SNMaskExample,SNBaseDataType,SNFormat')
+        'Company,Plant,PartNum,PrimWhse,SourceType,NonStock,CostMethod,'
+        'SNMask,SNMaskExample,SNBaseDataType,SNFormat')
 part_rev_header = (
         'Company,PartNum,RevisionNum,RevShortDesc,'
         'Approved,DrawNum,Plant,ProcessMode')
