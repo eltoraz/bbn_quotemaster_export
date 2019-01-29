@@ -35,6 +35,6 @@ if args.debug:
 
 # run the operation determined by the arguments given
 if args.test:
-    _test(delete)
+    _test(args.delete)
 else:
-    _full(delete)
+    _full(args.delete)
