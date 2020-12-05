@@ -1,0 +1,2 @@
+Program to export part data, bills of materials, and bills of operations from original QuoteMaster ERP system to Epicor.
+Converts data queries from from QuoteMaster and PFW (obtained separately) into a format compatible with new Epicor standards.
