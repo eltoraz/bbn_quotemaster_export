@@ -58,7 +58,6 @@ def _map_part_base(entry):
     dmt_entry['TrackLots'] = True if part_type == 'P' else False
     dmt_entry['SalesUM'] = uom
     dmt_entry['UsePartRev'] = (part_type == 'M')
-    dmt_entry['ImageFileName'] = entry[config.image_path]
     dmt_entry['SNFormat'] = config.sn_format if part_type == 'M' else ''
     dmt_entry['SNBaseDataType'] = config.sn_base_data_type if part_type == 'M' else ''
     dmt_entry['SNMask'] = config.sn_mask if part_type == 'M' else ''
